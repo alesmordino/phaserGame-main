@@ -9,8 +9,8 @@ enum playerstate {
   diagonalesopradestra,
   diagonalesoprasinistra
 }
-
-export default class playerr extends Phaser.Physics.Arcade.Sprite {
+import { IPlayer } from "./IPlayer";
+export default class playerr extends Phaser.Physics.Arcade.Sprite implements IPlayer {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private _speed: number = 200; // Velocità del personaggio
   private _playerstate: playerstate = playerstate.idle;

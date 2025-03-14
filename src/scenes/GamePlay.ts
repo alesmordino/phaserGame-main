@@ -1,7 +1,9 @@
 import playerr from '../scenes/moving';
-
+import movingPad from '../scenes/movingPad';
+import  {IPlayer} from '../scenes/IPlayer'
 export default class GamePlay extends Phaser.Scene {
   private player: playerr;
+  private player1: movingPad;
   private _voth = 0;
   private map: Phaser.Tilemaps.Tilemap;
   private tileset: Phaser.Tilemaps.Tileset;
@@ -22,6 +24,7 @@ export default class GamePlay extends Phaser.Scene {
   private centerHitbox12: Phaser.Physics.Arcade.Sprite;
   private centerHitbox13: Phaser.Physics.Arcade.Sprite;
   private centerHitbox14: Phaser.Physics.Arcade.Sprite;
+  private gamepad: Phaser.Input.Gamepad.Gamepad | null = null;
 
 
   constructor() {
@@ -51,7 +54,6 @@ export default class GamePlay extends Phaser.Scene {
 
   create() {
     this.player = new playerr(this, 470, 930);
-
     this.map = this.make.tilemap({ key: "level-1" });
     this.tileset = this.map.addTilesetImage("tilemap-extruded");
     this.world = this.map.createLayer("world", this.tileset, 0, 0);
@@ -76,6 +78,18 @@ export default class GamePlay extends Phaser.Scene {
 
     this.cameras.main.setScroll(mapWidth / 2 - this.cameras.main.width / 2, mapHeight / 2 - this.cameras.main.height / 2);
     this.cameras.main.setZoom(1);
+
+    this.input.gamepad.once('connected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+      this.gamepad = pad;
+      this.player1 = new movingPad(this, 470, 930);
+      console.log('Gamepad connected:', pad.id);
+    });
+
+    this.input.gamepad.once('disconnected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+      this.gamepad = null;
+      this.player = new playerr(this, 470, 930);
+      console.log('Gamepad disconnected:', pad.id);
+    });
 
     this.centerHitbox = this.physics.add.sprite(573, 140, null).setOrigin(0.5, 0.5);
     this.centerHitbox.body.setSize(20, 80); 
@@ -322,6 +336,12 @@ export default class GamePlay extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     this.player.update();
+    
+    if (this.gamepad) {
+      if (this.gamepad.leftStick.x !== 0 || this.gamepad.leftStick.y !== 0) {
+        this.player.setVelocity(this.gamepad.leftStick.x * 200, this.gamepad.leftStick.y * 200);
+      }
+    }
     if (this._voth == 0) {
       this.player.setFrame(0);
       this.time.delayedCall(2000, () => {
