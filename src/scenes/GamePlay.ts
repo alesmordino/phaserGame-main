@@ -79,18 +79,21 @@ export default class GamePlay extends Phaser.Scene {
     this.cameras.main.setScroll(mapWidth / 2 - this.cameras.main.width / 2, mapHeight / 2 - this.cameras.main.height / 2);
     this.cameras.main.setZoom(1);
 
-    this.input.gamepad.once('connected', (pad: Phaser.Input.Gamepad.Gamepad) => {
-      this.gamepad = pad;
-      this.player1 = new movingPad(this, 470, 930);
-      console.log('Gamepad connected:', pad.id);
-    });
+    if (this.input.gamepad) {
+      this.input.gamepad.once('connected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+        this.gamepad = pad;
+        this.player1 = new movingPad(this, 470, 930);
+        console.log('Gamepad connected:', pad.id);
+      });
 
-    this.input.gamepad.once('disconnected', (pad: Phaser.Input.Gamepad.Gamepad) => {
-      this.gamepad = null;
-      this.player = new playerr(this, 470, 930);
-      console.log('Gamepad disconnected:', pad.id);
-    });
-
+      this.input.gamepad.once('disconnected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+        this.gamepad = null;
+        this.player = new playerr(this, 470, 930);
+        console.log('Gamepad disconnected:', pad.id);
+      });
+    } else {
+      console.error('Gamepad input system is not initialized properly.');
+    }
     this.centerHitbox = this.physics.add.sprite(573, 140, null).setOrigin(0.5, 0.5);
     this.centerHitbox.body.setSize(20, 80); 
     this.centerHitbox.setImmovable(true);

@@ -41,6 +41,7 @@ window.addEventListener("load", () => {
     input: {
       activePointers: 2,
       keyboard: true,
+      gamepad: true
     },
     render: {
       pixelArt: false,
