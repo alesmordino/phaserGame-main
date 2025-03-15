@@ -14,6 +14,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 exports.__esModule = true;
 var moving_1 = require("../scenes/moving");
+var movingPad_1 = require("../scenes/movingPad");
+var levelManBall_1 = require("../scenes/levelManBall");
 var GamePlay = /** @class */ (function (_super) {
     __extends(GamePlay, _super);
     function GamePlay() {
@@ -21,6 +23,8 @@ var GamePlay = /** @class */ (function (_super) {
             key: "GamePlay"
         }) || this;
         _this._voth = 0;
+        _this.gamepad = null;
+        _this.spicchiodxgiuB = false;
         return _this;
     }
     GamePlay.prototype.preload = function () {
@@ -39,6 +43,7 @@ var GamePlay = /** @class */ (function (_super) {
         this.load.image('spicchiosxgiu', 'assets/images/spicchiosinistragiu.png');
         this.load.image('spicchiosxsu', 'assets/images/spicchiosinistrasu.png');
         this.load.image('spicchiodxsu', 'assets/images/spicchiodestrasu.png');
+        this.load.image('fish', 'assets/images/fish.png');
         this.physics.world.createDebugGraphic();
     };
     GamePlay.prototype.create = function () {
@@ -67,6 +72,21 @@ var GamePlay = /** @class */ (function (_super) {
         this.player.setCollideWorldBounds(true);
         this.cameras.main.setScroll(mapWidth / 2 - this.cameras.main.width / 2, mapHeight / 2 - this.cameras.main.height / 2);
         this.cameras.main.setZoom(1);
+        if (this.input.gamepad) {
+            this.input.gamepad.once('connected', function (pad) {
+                _this.gamepad = pad;
+                _this.player1 = new movingPad_1["default"](_this, 470, 930);
+                console.log('Gamepad connected:', pad.id);
+            });
+            this.input.gamepad.once('disconnected', function (pad) {
+                _this.gamepad = null;
+                _this.player = new moving_1["default"](_this, 470, 930);
+                console.log('Gamepad disconnected:', pad.id);
+            });
+        }
+        else {
+            console.error('Gamepad input system is not initialized properly.');
+        }
         this.centerHitbox = this.physics.add.sprite(573, 140, null).setOrigin(0.5, 0.5);
         this.centerHitbox.body.setSize(20, 80);
         this.centerHitbox.setImmovable(true);
@@ -194,7 +214,10 @@ var GamePlay = /** @class */ (function (_super) {
             repeat: -1
         });
         this.physics.add.collider(this.player, this.collisions);
-        this.physics.add.collider(this.player, this.centerHitbox10);
+        this.physics.add.collider(this.player, this.centerHitbox10, function () {
+            _this.scene.stop("GamePlay");
+            _this.scene.start("levelManBall");
+        });
         this.centerHitbox11 = this.physics.add.sprite(770, 480, null).setOrigin(0.5, 0.5);
         this.centerHitbox11.body.setSize(40, 40);
         this.centerHitbox11.setImmovable(true);
@@ -214,8 +237,10 @@ var GamePlay = /** @class */ (function (_super) {
         this.centerHitbox12.setImmovable(true);
         this.centerHitbox12.setVisible(false);
         this.centerHitbox12.setDebug(true, true, 0xff0000);
+        var fish = this.add.image(this.centerHitbox12.x, this.centerHitbox12.y, 'fish').setOrigin(0.5, 0.5);
+        fish.setScale(0.8).setDepth(1);
         this.tweens.add({
-            targets: this.centerHitbox12,
+            targets: [this.centerHitbox12, fish],
             x: 450,
             y: 320,
             duration: 5000,
@@ -255,10 +280,12 @@ var GamePlay = /** @class */ (function (_super) {
         this.physics.add.collider(this.player, this.centerHitbox14);
         var imageDisplayed = false;
         this.physics.add.collider(this.player, this.centerHitbox10, function () {
-            if (!imageDisplayed) {
-                var image = _this.add.image(788, 798, 'spicchiodxgiu');
-                image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(472, 452);
-                imageDisplayed = true;
+            if (_this.spicchiodxgiuB) {
+                if (!imageDisplayed) {
+                    var image = _this.add.image(788, 798, 'spicchiodxgiu');
+                    image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(472, 452);
+                    imageDisplayed = true;
+                }
             }
         });
         var imageDisplayed1 = false;
@@ -281,6 +308,11 @@ var GamePlay = /** @class */ (function (_super) {
     GamePlay.prototype.update = function (time, delta) {
         var _this = this;
         this.player.update();
+        if (this.gamepad) {
+            if (this.gamepad.leftStick.x !== 0 || this.gamepad.leftStick.y !== 0) {
+                this.player.setVelocity(this.gamepad.leftStick.x * 200, this.gamepad.leftStick.y * 200);
+            }
+        }
         if (this._voth == 0) {
             this.player.setFrame(0);
             this.time.delayedCall(2000, function () {
@@ -289,6 +321,10 @@ var GamePlay = /** @class */ (function (_super) {
         }
         if (this._voth == 1 && this.player.body.velocity.x == 0 && this.player.body.velocity.y == 0) {
             this.player.anims.play("player-idle", true);
+        }
+        if (levelManBall_1.completeLevel) {
+            this.scene.stop("GamePlay");
+            this.scene.start("levelManBall");
         }
     };
     return GamePlay;

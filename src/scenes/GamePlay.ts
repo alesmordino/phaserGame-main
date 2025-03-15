@@ -1,6 +1,8 @@
 import playerr from '../scenes/moving';
 import movingPad from '../scenes/movingPad';
-import  {IPlayer} from '../scenes/IPlayer'
+import { IPlayer } from '../scenes/IPlayer';
+import { completeLevel } from '../scenes/levelManBall';
+
 export default class GamePlay extends Phaser.Scene {
   private player: playerr;
   private player1: movingPad;
@@ -25,7 +27,7 @@ export default class GamePlay extends Phaser.Scene {
   private centerHitbox13: Phaser.Physics.Arcade.Sprite;
   private centerHitbox14: Phaser.Physics.Arcade.Sprite;
   private gamepad: Phaser.Input.Gamepad.Gamepad | null = null;
-
+  private spicchiodxgiuB: Boolean = false;
 
   constructor() {
     super({
@@ -49,6 +51,7 @@ export default class GamePlay extends Phaser.Scene {
     this.load.image('spicchiosxgiu', 'assets/images/spicchiosinistragiu.png');
     this.load.image('spicchiosxsu', 'assets/images/spicchiosinistrasu.png');
     this.load.image('spicchiodxsu', 'assets/images/spicchiodestrasu.png');
+    this.load.image('fish', 'assets/images/fish.png');
     this.physics.world.createDebugGraphic();
   }
 
@@ -242,7 +245,11 @@ export default class GamePlay extends Phaser.Scene {
         });
 
     this.physics.add.collider(this.player, this.collisions);
-    this.physics.add.collider(this.player, this.centerHitbox10); 
+    this.physics.add.collider(this.player, this.centerHitbox10, () => {
+      this.scene.stop("GamePlay");
+      this.scene.start("levelManBall");
+    });
+    
 
     this.centerHitbox11 = this.physics.add.sprite(770, 480, null).setOrigin(0.5, 0.5);
     this.centerHitbox11.body.setSize(40, 40); 
@@ -266,8 +273,11 @@ export default class GamePlay extends Phaser.Scene {
     this.centerHitbox12.setVisible(false); 
     this.centerHitbox12.setDebug(true, true, 0xff0000);
 
+    const fish = this.add.image(this.centerHitbox12.x, this.centerHitbox12.y, 'fish').setOrigin(0.5, 0.5);
+    fish.setScale(0.8).setDepth(1); 
+
     this.tweens.add({
-      targets: this.centerHitbox12,
+      targets: [this.centerHitbox12,fish],
       x: 450,
       y: 320,
       duration: 5000,
@@ -311,10 +321,12 @@ export default class GamePlay extends Phaser.Scene {
 
     let imageDisplayed = false;
     this.physics.add.collider(this.player, this.centerHitbox10, () => {
-      if (!imageDisplayed) {
-      const image = this.add.image(788,798, 'spicchiodxgiu');
-      image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(472, 452);
-      imageDisplayed = true;
+      if(this.spicchiodxgiuB){
+        if (!imageDisplayed) {
+          const image = this.add.image(788,798, 'spicchiodxgiu');
+          image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(472, 452);
+          imageDisplayed = true;
+        }
       }
     });
 
@@ -354,6 +366,11 @@ export default class GamePlay extends Phaser.Scene {
     if (this._voth == 1 && this.player.body.velocity.x == 0 && this.player.body.velocity.y == 0) 
     {
       this.player.anims.play("player-idle", true);
+    }
+
+    if (completeLevel) {
+      this.scene.stop("GamePlay");
+      this.scene.start("levelManBall");
     }
   }
 }
