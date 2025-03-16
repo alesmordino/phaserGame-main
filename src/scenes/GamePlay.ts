@@ -27,7 +27,9 @@ export default class GamePlay extends Phaser.Scene {
   private centerHitbox13: Phaser.Physics.Arcade.Sprite;
   private centerHitbox14: Phaser.Physics.Arcade.Sprite;
   private gamepad: Phaser.Input.Gamepad.Gamepad | null = null;
-  private spicchiodxgiuB: Boolean = false;
+  private pallaGrande: Phaser.GameObjects.Image;
+  private pallaPiccola: Phaser.GameObjects.Image;
+  private giostra: Phaser.GameObjects.Image;
 
   constructor() {
     super({
@@ -52,6 +54,7 @@ export default class GamePlay extends Phaser.Scene {
     this.load.image('spicchiosxsu', 'assets/images/spicchiosinistrasu.png');
     this.load.image('spicchiodxsu', 'assets/images/spicchiodestrasu.png');
     this.load.image('fish', 'assets/images/fish.png');
+    this.load.image('giostra', 'assets/images/giostra.png');
     this.physics.world.createDebugGraphic();
   }
 
@@ -203,53 +206,50 @@ export default class GamePlay extends Phaser.Scene {
     this.centerHitbox13.setVisible(false); 
     this.centerHitbox13.setDebug(true, true, 0xff0000);
 
-
-    
     this.centerHitbox10 = this.physics.add.sprite(580, 765, null).setOrigin(0.5, 0.5);
     this.centerHitbox10.body.setSize(40, 40); 
     this.centerHitbox10.setImmovable(true); 
     this.centerHitbox10.setVisible(false); 
     this.centerHitbox10.setDebug(true, true, 0xff0000);
     
-    const pallaGrande = this.add.image(this.centerHitbox10.x, this.centerHitbox10.y, 'pallagrande').setOrigin(0.5, 0.5);
-    pallaGrande.setScale(1).setDepth(1); 
+    this.pallaGrande = this.add.image(this.centerHitbox10.x, this.centerHitbox10.y, 'pallagrande').setOrigin(0.5, 0.5);
+    this.pallaGrande.setScale(1).setDepth(1); 
 
-    const pallaPiccola = this.add.image(this.centerHitbox10.x, this.centerHitbox10.y, 'pallapiccola').setOrigin(0.5, 0.5);
-    pallaPiccola.setScale(0.5).setDepth(1); 
-    pallaPiccola.setVisible(false); 
+    this.pallaPiccola = this.add.image(this.centerHitbox10.x, this.centerHitbox10.y, 'pallapiccola').setOrigin(0.5, 0.5);
+    this.pallaPiccola.setScale(0.5).setDepth(1); 
+    this.pallaPiccola.setVisible(false); 
 
     let isLargeBall = true;
     this.time.addEvent({
-        delay: 1000,
-        callback: () => {
-            if (isLargeBall) {
-                pallaGrande.setVisible(true);
-                pallaPiccola.setVisible(false);
-            } else {
-                pallaGrande.setVisible(false);
-                pallaPiccola.setVisible(true);
-            }
-            isLargeBall = !isLargeBall; 
-        },
-        loop: true 
+      delay: 1000,
+      callback: () => {
+          if (isLargeBall) {
+              this.pallaGrande.setVisible(true);
+              this.pallaPiccola.setVisible(false);
+          } else {
+              this.pallaGrande.setVisible(false);
+              this.pallaPiccola.setVisible(true);
+          }
+          isLargeBall = !isLargeBall; 
+      },
+      loop: true 
     });
-
-        this.tweens.add({
-          targets: [this.centerHitbox10, pallaGrande, pallaPiccola],
-          x: 790,
-          y: 605,
-          duration: 5000,
-          ease: 'Sine.easeInOut',
-          yoyo: true,
-          repeat: -1
-        });
+    
+    this.tweens.add({
+      targets: [this.centerHitbox10, this.pallaGrande, this.pallaPiccola],
+      x: 790,
+      y: 605,
+      duration: 5000,
+      ease: 'Sine.easeInOut',
+      yoyo: true,
+      repeat: -1
+    });
 
     this.physics.add.collider(this.player, this.collisions);
     this.physics.add.collider(this.player, this.centerHitbox10, () => {
       this.scene.stop("GamePlay");
       this.scene.start("levelManBall");
     });
-    
 
     this.centerHitbox11 = this.physics.add.sprite(770, 480, null).setOrigin(0.5, 0.5);
     this.centerHitbox11.body.setSize(40, 40); 
@@ -302,6 +302,9 @@ export default class GamePlay extends Phaser.Scene {
       loop: true
     });
 
+    this.giostra = this.add.image(262, 283, 'giostra').setOrigin(0.5, 0.5);
+    this.giostra.setScale(1).setDepth(1);
+
     this.physics.add.collider(this.player, this.collisions);
     this.physics.add.collider(this.player, this.centerHitbox);
     this.physics.add.collider(this.player, this.centerHitbox1);
@@ -320,15 +323,13 @@ export default class GamePlay extends Phaser.Scene {
     this.physics.add.collider(this.player, this.centerHitbox14);
 
     let imageDisplayed = false;
-    this.physics.add.collider(this.player, this.centerHitbox10, () => {
-      if(this.spicchiodxgiuB){
-        if (!imageDisplayed) {
-          const image = this.add.image(788,798, 'spicchiodxgiu');
-          image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(472, 452);
-          imageDisplayed = true;
-        }
+    if(completeLevel) {
+      if (!imageDisplayed) {
+        const image = this.add.image(788,798, 'spicchiodxgiu');
+        image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(472, 452);
+        imageDisplayed = true;
       }
-    });
+    }
 
     let imageDisplayed1 = false;
     this.physics.add.collider(this.player, this.centerHitbox12, () => {
@@ -351,7 +352,16 @@ export default class GamePlay extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     this.player.update();
-    
+    const centerX = 300; // Coordinata X del punto fisso
+    const centerY = 300; // Coordinata Y del punto fisso
+    const speed = 0.002; // Velocità di rotazione
+  
+    Phaser.Math.RotateAround(
+      this.giostra,  // L'oggetto da ruotare
+      centerX,
+      centerY,
+      speed * delta
+    );
     if (this.gamepad) {
       if (this.gamepad.leftStick.x !== 0 || this.gamepad.leftStick.y !== 0) {
         this.player.setVelocity(this.gamepad.leftStick.x * 200, this.gamepad.leftStick.y * 200);
@@ -369,8 +379,9 @@ export default class GamePlay extends Phaser.Scene {
     }
 
     if (completeLevel) {
-      this.scene.stop("GamePlay");
-      this.scene.start("levelManBall");
+      this.centerHitbox10.setVisible(false);
+      this.pallaGrande.setVisible(false);
+      this.pallaPiccola.setVisible(false);
     }
   }
 }

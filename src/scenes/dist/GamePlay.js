@@ -24,7 +24,6 @@ var GamePlay = /** @class */ (function (_super) {
         }) || this;
         _this._voth = 0;
         _this.gamepad = null;
-        _this.spicchiodxgiuB = false;
         return _this;
     }
     GamePlay.prototype.preload = function () {
@@ -44,6 +43,7 @@ var GamePlay = /** @class */ (function (_super) {
         this.load.image('spicchiosxsu', 'assets/images/spicchiosinistrasu.png');
         this.load.image('spicchiodxsu', 'assets/images/spicchiodestrasu.png');
         this.load.image('fish', 'assets/images/fish.png');
+        this.load.image('giostra', 'assets/images/giostra.png');
         this.physics.world.createDebugGraphic();
     };
     GamePlay.prototype.create = function () {
@@ -183,29 +183,29 @@ var GamePlay = /** @class */ (function (_super) {
         this.centerHitbox10.setImmovable(true);
         this.centerHitbox10.setVisible(false);
         this.centerHitbox10.setDebug(true, true, 0xff0000);
-        var pallaGrande = this.add.image(this.centerHitbox10.x, this.centerHitbox10.y, 'pallagrande').setOrigin(0.5, 0.5);
-        pallaGrande.setScale(1).setDepth(1);
-        var pallaPiccola = this.add.image(this.centerHitbox10.x, this.centerHitbox10.y, 'pallapiccola').setOrigin(0.5, 0.5);
-        pallaPiccola.setScale(0.5).setDepth(1);
-        pallaPiccola.setVisible(false);
+        this.pallaGrande = this.add.image(this.centerHitbox10.x, this.centerHitbox10.y, 'pallagrande').setOrigin(0.5, 0.5);
+        this.pallaGrande.setScale(1).setDepth(1);
+        this.pallaPiccola = this.add.image(this.centerHitbox10.x, this.centerHitbox10.y, 'pallapiccola').setOrigin(0.5, 0.5);
+        this.pallaPiccola.setScale(0.5).setDepth(1);
+        this.pallaPiccola.setVisible(false);
         var isLargeBall = true;
         this.time.addEvent({
             delay: 1000,
             callback: function () {
                 if (isLargeBall) {
-                    pallaGrande.setVisible(true);
-                    pallaPiccola.setVisible(false);
+                    _this.pallaGrande.setVisible(true);
+                    _this.pallaPiccola.setVisible(false);
                 }
                 else {
-                    pallaGrande.setVisible(false);
-                    pallaPiccola.setVisible(true);
+                    _this.pallaGrande.setVisible(false);
+                    _this.pallaPiccola.setVisible(true);
                 }
                 isLargeBall = !isLargeBall;
             },
             loop: true
         });
         this.tweens.add({
-            targets: [this.centerHitbox10, pallaGrande, pallaPiccola],
+            targets: [this.centerHitbox10, this.pallaGrande, this.pallaPiccola],
             x: 790,
             y: 605,
             duration: 5000,
@@ -262,6 +262,8 @@ var GamePlay = /** @class */ (function (_super) {
             },
             loop: true
         });
+        this.giostra = this.add.image(262, 283, 'giostra').setOrigin(0.5, 0.5);
+        this.giostra.setScale(1).setDepth(1);
         this.physics.add.collider(this.player, this.collisions);
         this.physics.add.collider(this.player, this.centerHitbox);
         this.physics.add.collider(this.player, this.centerHitbox1);
@@ -279,15 +281,13 @@ var GamePlay = /** @class */ (function (_super) {
         this.physics.add.collider(this.player, this.centerHitbox13);
         this.physics.add.collider(this.player, this.centerHitbox14);
         var imageDisplayed = false;
-        this.physics.add.collider(this.player, this.centerHitbox10, function () {
-            if (_this.spicchiodxgiuB) {
-                if (!imageDisplayed) {
-                    var image = _this.add.image(788, 798, 'spicchiodxgiu');
-                    image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(472, 452);
-                    imageDisplayed = true;
-                }
+        if (levelManBall_1.completeLevel) {
+            if (!imageDisplayed) {
+                var image = this.add.image(788, 798, 'spicchiodxgiu');
+                image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(472, 452);
+                imageDisplayed = true;
             }
-        });
+        }
         var imageDisplayed1 = false;
         this.physics.add.collider(this.player, this.centerHitbox12, function () {
             if (!imageDisplayed1) {
@@ -308,6 +308,11 @@ var GamePlay = /** @class */ (function (_super) {
     GamePlay.prototype.update = function (time, delta) {
         var _this = this;
         this.player.update();
+        var centerX = 300; // Coordinata X del punto fisso
+        var centerY = 300; // Coordinata Y del punto fisso
+        var speed = 0.002; // Velocità di rotazione
+        Phaser.Math.RotateAround(this.giostra, // L'oggetto da ruotare
+        centerX, centerY, speed * delta);
         if (this.gamepad) {
             if (this.gamepad.leftStick.x !== 0 || this.gamepad.leftStick.y !== 0) {
                 this.player.setVelocity(this.gamepad.leftStick.x * 200, this.gamepad.leftStick.y * 200);
@@ -323,8 +328,9 @@ var GamePlay = /** @class */ (function (_super) {
             this.player.anims.play("player-idle", true);
         }
         if (levelManBall_1.completeLevel) {
-            this.scene.stop("GamePlay");
-            this.scene.start("levelManBall");
+            this.centerHitbox10.setVisible(false);
+            this.pallaGrande.setVisible(false);
+            this.pallaPiccola.setVisible(false);
         }
     };
     return GamePlay;

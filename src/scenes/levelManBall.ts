@@ -13,7 +13,7 @@ export default class levelManBall extends Phaser.Scene {
 
   create(): void {
     this.input.keyboard.on('keydown-E', () => {
-      completeLevel = true;
+      completeLevel= true;
       this.scene.stop('levelManBall');
       this.scene.start('GamePlay');
     });
