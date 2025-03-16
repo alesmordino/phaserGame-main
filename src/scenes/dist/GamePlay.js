@@ -24,6 +24,7 @@ var GamePlay = /** @class */ (function (_super) {
         }) || this;
         _this._voth = 0;
         _this.gamepad = null;
+        _this.ManBall = true;
         return _this;
     }
     GamePlay.prototype.preload = function () {
@@ -43,7 +44,6 @@ var GamePlay = /** @class */ (function (_super) {
         this.load.image('spicchiosxsu', 'assets/images/spicchiosinistrasu.png');
         this.load.image('spicchiodxsu', 'assets/images/spicchiodestrasu.png');
         this.load.image('fish', 'assets/images/fish.png');
-        this.load.image('giostra', 'assets/images/giostra.png');
         this.physics.world.createDebugGraphic();
     };
     GamePlay.prototype.create = function () {
@@ -262,8 +262,6 @@ var GamePlay = /** @class */ (function (_super) {
             },
             loop: true
         });
-        this.giostra = this.add.image(262, 283, 'giostra').setOrigin(0.5, 0.5);
-        this.giostra.setScale(1).setDepth(1);
         this.physics.add.collider(this.player, this.collisions);
         this.physics.add.collider(this.player, this.centerHitbox);
         this.physics.add.collider(this.player, this.centerHitbox1);
@@ -308,11 +306,6 @@ var GamePlay = /** @class */ (function (_super) {
     GamePlay.prototype.update = function (time, delta) {
         var _this = this;
         this.player.update();
-        var centerX = 300; // Coordinata X del punto fisso
-        var centerY = 300; // Coordinata Y del punto fisso
-        var speed = 0.002; // Velocità di rotazione
-        Phaser.Math.RotateAround(this.giostra, // L'oggetto da ruotare
-        centerX, centerY, speed * delta);
         if (this.gamepad) {
             if (this.gamepad.leftStick.x !== 0 || this.gamepad.leftStick.y !== 0) {
                 this.player.setVelocity(this.gamepad.leftStick.x * 200, this.gamepad.leftStick.y * 200);
@@ -331,6 +324,7 @@ var GamePlay = /** @class */ (function (_super) {
             this.centerHitbox10.setVisible(false);
             this.pallaGrande.setVisible(false);
             this.pallaPiccola.setVisible(false);
+            this.centerHitbox10.body.enable = false;
         }
     };
     return GamePlay;

@@ -29,7 +29,7 @@ export default class GamePlay extends Phaser.Scene {
   private gamepad: Phaser.Input.Gamepad.Gamepad | null = null;
   private pallaGrande: Phaser.GameObjects.Image;
   private pallaPiccola: Phaser.GameObjects.Image;
-  private giostra: Phaser.GameObjects.Image;
+  private ManBall: Boolean = true;
 
   constructor() {
     super({
@@ -54,7 +54,6 @@ export default class GamePlay extends Phaser.Scene {
     this.load.image('spicchiosxsu', 'assets/images/spicchiosinistrasu.png');
     this.load.image('spicchiodxsu', 'assets/images/spicchiodestrasu.png');
     this.load.image('fish', 'assets/images/fish.png');
-    this.load.image('giostra', 'assets/images/giostra.png');
     this.physics.world.createDebugGraphic();
   }
 
@@ -302,9 +301,6 @@ export default class GamePlay extends Phaser.Scene {
       loop: true
     });
 
-    this.giostra = this.add.image(262, 283, 'giostra').setOrigin(0.5, 0.5);
-    this.giostra.setScale(1).setDepth(1);
-
     this.physics.add.collider(this.player, this.collisions);
     this.physics.add.collider(this.player, this.centerHitbox);
     this.physics.add.collider(this.player, this.centerHitbox1);
@@ -352,16 +348,6 @@ export default class GamePlay extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     this.player.update();
-    const centerX = 300; // Coordinata X del punto fisso
-    const centerY = 300; // Coordinata Y del punto fisso
-    const speed = 0.002; // Velocità di rotazione
-  
-    Phaser.Math.RotateAround(
-      this.giostra,  // L'oggetto da ruotare
-      centerX,
-      centerY,
-      speed * delta
-    );
     if (this.gamepad) {
       if (this.gamepad.leftStick.x !== 0 || this.gamepad.leftStick.y !== 0) {
         this.player.setVelocity(this.gamepad.leftStick.x * 200, this.gamepad.leftStick.y * 200);
@@ -377,11 +363,11 @@ export default class GamePlay extends Phaser.Scene {
     {
       this.player.anims.play("player-idle", true);
     }
-
     if (completeLevel) {
       this.centerHitbox10.setVisible(false);
       this.pallaGrande.setVisible(false);
       this.pallaPiccola.setVisible(false);
+      this.centerHitbox10.body.enable = false;
     }
   }
 }
