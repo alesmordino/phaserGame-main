@@ -6,6 +6,8 @@ import GamePlay from "./scenes/GamePlay";
 //importiamo GameData che contiene i valori globali del gioco
 import { GameData } from "./GameData";
 import levelManBall from "./scenes/levelManBall";
+import casino from "./scenes/casino";
+import arcade from "./scenes/arcade";
 
 //il listener per l'evento load della pagina
 //questo evento viene lanciato quando la pagina è stata caricata
@@ -32,6 +34,8 @@ window.addEventListener("load", () => {
       Boot,
       GamePlay,
       levelManBall,
+      casino,
+      arcade,
     ],
     physics: {
       default: "arcade",  // Sistema di fisica

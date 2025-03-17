@@ -2,6 +2,8 @@ import playerr from '../scenes/moving';
 import movingPad from '../scenes/movingPad';
 import { IPlayer } from '../scenes/IPlayer';
 import { completeLevel } from '../scenes/levelManBall';
+import { completeLevel1 } from '../scenes/casino';
+import { completeLevel2 } from '../scenes/arcade';
 
 export default class GamePlay extends Phaser.Scene {
   private player: playerr;
@@ -29,7 +31,7 @@ export default class GamePlay extends Phaser.Scene {
   private gamepad: Phaser.Input.Gamepad.Gamepad | null = null;
   private pallaGrande: Phaser.GameObjects.Image;
   private pallaPiccola: Phaser.GameObjects.Image;
-  private ManBall: Boolean = true;
+  private fish: Phaser.GameObjects.Image;
 
   constructor() {
     super({
@@ -250,6 +252,7 @@ export default class GamePlay extends Phaser.Scene {
       this.scene.start("levelManBall");
     });
 
+
     this.centerHitbox11 = this.physics.add.sprite(770, 480, null).setOrigin(0.5, 0.5);
     this.centerHitbox11.body.setSize(40, 40); 
     this.centerHitbox11.setImmovable(true);
@@ -272,17 +275,22 @@ export default class GamePlay extends Phaser.Scene {
     this.centerHitbox12.setVisible(false); 
     this.centerHitbox12.setDebug(true, true, 0xff0000);
 
-    const fish = this.add.image(this.centerHitbox12.x, this.centerHitbox12.y, 'fish').setOrigin(0.5, 0.5);
-    fish.setScale(0.8).setDepth(1); 
+    this.fish = this.add.image(this.centerHitbox12.x, this.centerHitbox12.y, 'fish').setOrigin(0.5, 0.5);
+    this.fish.setScale(0.8).setDepth(1); 
 
     this.tweens.add({
-      targets: [this.centerHitbox12,fish],
+      targets: [this.centerHitbox12,this.fish],
       x: 450,
       y: 320,
       duration: 5000,
       ease: 'Sine.easeInOut',
       yoyo: true,
       repeat: -1
+    });
+
+    this.physics.add.collider(this.player, this.centerHitbox12, () => {
+      this.scene.stop("GamePlay");
+      this.scene.start("casino");
     });
 
     this.centerHitbox14 = this.physics.add.sprite(440, 820, null).setOrigin(0.5, 0.5);
@@ -328,22 +336,26 @@ export default class GamePlay extends Phaser.Scene {
     }
 
     let imageDisplayed1 = false;
-    this.physics.add.collider(this.player, this.centerHitbox12, () => {
+    if(completeLevel1){
+      this.physics.add.collider(this.player, this.centerHitbox12, () => {
       if (!imageDisplayed1) {
-      const image = this.add.image(232,253, 'spicchiosxsu');
-      image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(464, 505);
-      imageDisplayed1 = true;
-      }
-    });
+        const image = this.add.image(232,253, 'spicchiosxsu');
+        image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(464, 505);
+        imageDisplayed1 = true;
+        }
+      });
+    }
 
     let imageDisplayed2 = false;
-    this.physics.add.collider(this.player, this.centerHitbox11, () => {
+    if(completeLevel2){
+      this.physics.add.collider(this.player, this.centerHitbox11, () => {
       if (!imageDisplayed2) {
-      const image = this.add.image(789,253.5, 'spicchiodxsu');
-      image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(471, 507);
-      imageDisplayed2 = true;
-      }
-    });
+        const image = this.add.image(789,253.5, 'spicchiodxsu');
+        image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(471, 507);
+        imageDisplayed2 = true;
+        }
+      });
+    }
   }
 
   update(time: number, delta: number): void {
@@ -368,6 +380,10 @@ export default class GamePlay extends Phaser.Scene {
       this.pallaGrande.setVisible(false);
       this.pallaPiccola.setVisible(false);
       this.centerHitbox10.body.enable = false;
+    }else if(completeLevel1){
+      this.centerHitbox12.setVisible(false);
+      this.centerHitbox12.body.enable = false;
+      this.fish.setVisible(false);
     }
   }
 }
