@@ -214,53 +214,38 @@ var Boot = /** @class */ (function (_super) {
                             yoyo: true,
                             repeat: -1
                         });
+                        _this.plane.setVisible(true);
+                        _this.tweens.add({
+                            targets: _this.plane,
+                            x: _this.cameras.main.width,
+                            y: 0,
+                            duration: 4000,
+                            ease: 'Linear'
+                        });
+                        _this.time.delayedCall(4500, function () {
+                            _this.plane.setVisible(false);
+                            _this.plane1.setVisible(true);
+                            _this.tweens.add({
+                                targets: _this.plane1,
+                                y: _this.cameras.main.height + _this.plane1.height,
+                                duration: 4000,
+                                ease: 'Linear'
+                            });
+                        });
+                        _this.time.delayedCall(9000, function () {
+                            _this.plane1.setVisible(false);
+                            _this.plane2.setVisible(true);
+                            _this.tweens.add({
+                                targets: _this.plane2,
+                                x: _this.cameras.main.width + _this.plane2.width,
+                                duration: 4000,
+                                ease: 'Linear'
+                            });
+                        });
                     });
                 });
             });
         });
-    };
-    Boot.prototype.startPlaneAnimations = function () {
-        var _this = this;
-        this.plane.setVisible(true);
-        this.tweens.add({
-            targets: this.plane,
-            x: this.cameras.main.width,
-            y: 0,
-            duration: 4000,
-            ease: 'Linear',
-            onComplete: function () {
-                _this.plane.setVisible(false);
-                _this.plane1.setVisible(true);
-                _this.tweens.add({
-                    targets: _this.plane1,
-                    y: _this.cameras.main.height + _this.plane1.height,
-                    duration: 4000,
-                    ease: 'Linear',
-                    onComplete: function () {
-                        _this.plane1.setVisible(false);
-                        _this.plane2.setVisible(true);
-                        _this.tweens.add({
-                            targets: _this.plane2,
-                            x: _this.cameras.main.width + _this.plane2.width,
-                            duration: 4000,
-                            ease: 'Linear',
-                            onComplete: function () {
-                                _this.plane2.setVisible(false);
-                                _this.time.delayedCall(1000, function () {
-                                    _this.startPlaneAnimations();
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    };
-    Boot.prototype.update = function () {
-        if (window.currentEmotion && window.currentEmotion !== this.lastEmotion) {
-            this.lastEmotion = window.currentEmotion;
-            console.log("Emozione aggiornata:", this.lastEmotion);
-        }
     };
     return Boot;
 }(phaser_1["default"].Scene));
