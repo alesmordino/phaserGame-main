@@ -32,6 +32,7 @@ export default class GamePlay extends Phaser.Scene {
   private pallaGrande: Phaser.GameObjects.Image;
   private pallaPiccola: Phaser.GameObjects.Image;
   private fish: Phaser.GameObjects.Image;
+  private plane: Phaser.GameObjects.Image;
 
   constructor() {
     super({
@@ -56,6 +57,7 @@ export default class GamePlay extends Phaser.Scene {
     this.load.image('spicchiosxsu', 'assets/images/spicchiosinistrasu.png');
     this.load.image('spicchiodxsu', 'assets/images/spicchiodestrasu.png');
     this.load.image('fish', 'assets/images/fish.png');
+    this.load.image('plane', 'assets/images/plane.png');
     this.physics.world.createDebugGraphic();
   }
 
@@ -259,8 +261,11 @@ export default class GamePlay extends Phaser.Scene {
     this.centerHitbox11.setVisible(false); 
     this.centerHitbox11.setDebug(true, true, 0xff0000);
 
+    this.plane = this.add.image(this.centerHitbox11.x, this.centerHitbox11.y, 'plane').setOrigin(0.5, 0.5);
+    this.plane.setScale(0.2).setDepth(1); 
+
     this.tweens.add({
-      targets: this.centerHitbox11,
+      targets: [this.centerHitbox11,this.plane],
       x: 570,
       y: 320,
       duration: 5000,
@@ -390,6 +395,7 @@ export default class GamePlay extends Phaser.Scene {
     if(completeLevel2){
       this.centerHitbox11.setVisible(false);
       this.centerHitbox11.body.enable = false;
+      this.plane.setVisible(false);
     }
   }
 }

@@ -45,6 +45,7 @@ var GamePlay = /** @class */ (function (_super) {
         this.load.image('spicchiosxsu', 'assets/images/spicchiosinistrasu.png');
         this.load.image('spicchiodxsu', 'assets/images/spicchiodestrasu.png');
         this.load.image('fish', 'assets/images/fish.png');
+        this.load.image('plane', 'assets/images/plane.png');
         this.physics.world.createDebugGraphic();
     };
     GamePlay.prototype.create = function () {
@@ -224,8 +225,10 @@ var GamePlay = /** @class */ (function (_super) {
         this.centerHitbox11.setImmovable(true);
         this.centerHitbox11.setVisible(false);
         this.centerHitbox11.setDebug(true, true, 0xff0000);
+        this.plane = this.add.image(this.centerHitbox11.x, this.centerHitbox11.y, 'plane').setOrigin(0.5, 0.5);
+        this.plane.setScale(0.2).setDepth(1);
         this.tweens.add({
-            targets: this.centerHitbox11,
+            targets: [this.centerHitbox11, this.plane],
             x: 570,
             y: 320,
             duration: 5000,
@@ -343,6 +346,7 @@ var GamePlay = /** @class */ (function (_super) {
         if (arcade_1.completeLevel2) {
             this.centerHitbox11.setVisible(false);
             this.centerHitbox11.body.enable = false;
+            this.plane.setVisible(false);
         }
     };
     return GamePlay;
