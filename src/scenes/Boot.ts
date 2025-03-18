@@ -178,40 +178,55 @@ export default class Boot extends Phaser.Scene {
                         yoyo: true,
                         repeat: -1
                     });
-
-                    this.plane.setVisible(true);
-                    this.tweens.add({
-                        targets: this.plane,
-                        x: this.cameras.main.width,
-                        y: 0,
-                        duration: 4000,
-                        ease: 'Linear',
-                    });
-                    
-                    this.time.delayedCall(4500, () => {
-                        this.plane.setVisible(false);
-                        this.plane1.setVisible(true);
-                        this.tweens.add({
-                            targets: this.plane1,
-                            y: this.cameras.main.height + this.plane1.height,
-                            duration: 4000,
-                            ease: 'Linear',
-                        });
-                    });
-                    
-                    this.time.delayedCall(9000, () => {
-                        this.plane1.setVisible(false);
-                        this.plane2.setVisible(true);
-                        this.tweens.add({
-                            targets: this.plane2,
-                            x: this.cameras.main.width + this.plane2.width,
-                            duration: 4000,
-                            ease: 'Linear',
-                        });
-                    });
+                      
+                    this.startPlaneAnimations();
                 });
             });
         });
     });
+  }
+
+  startPlaneAnimations(): void {
+    this.plane.setVisible(true);
+    this.tweens.add({
+      targets: this.plane,
+      x: this.cameras.main.width,
+      y: 0,
+      duration: 4000,
+      ease: 'Linear',
+      onComplete: () => {
+        this.plane.setVisible(false);
+        this.plane1.setVisible(true);
+        this.tweens.add({
+          targets: this.plane1,
+          y: this.cameras.main.height + this.plane1.height,
+          duration: 4000,
+          ease: 'Linear',
+          onComplete: () => {
+            this.plane1.setVisible(false);
+            this.plane2.setVisible(true);
+            this.tweens.add({
+              targets: this.plane2,
+              x: this.cameras.main.width + this.plane2.width,
+              duration: 4000,
+              ease: 'Linear',
+              onComplete: () => {
+                this.plane2.setVisible(false);
+                this.time.delayedCall(1000, () => {
+                  this.startPlaneAnimations();
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+
+  update(): void {
+    if (window.currentEmotion && window.currentEmotion !== this.lastEmotion) {
+      this.lastEmotion = window.currentEmotion;
+      console.log("Emozione aggiornata:", this.lastEmotion);
+    }
   }
 }
