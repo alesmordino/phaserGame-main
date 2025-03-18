@@ -16,6 +16,8 @@ exports.__esModule = true;
 var moving_1 = require("../scenes/moving");
 var movingPad_1 = require("../scenes/movingPad");
 var levelManBall_1 = require("../scenes/levelManBall");
+var casino_1 = require("../scenes/casino");
+var arcade_1 = require("../scenes/arcade");
 var GamePlay = /** @class */ (function (_super) {
     __extends(GamePlay, _super);
     function GamePlay() {
@@ -24,7 +26,6 @@ var GamePlay = /** @class */ (function (_super) {
         }) || this;
         _this._voth = 0;
         _this.gamepad = null;
-        _this.ManBall = true;
         return _this;
     }
     GamePlay.prototype.preload = function () {
@@ -232,21 +233,29 @@ var GamePlay = /** @class */ (function (_super) {
             yoyo: true,
             repeat: -1
         });
+        this.physics.add.collider(this.player, this.centerHitbox11, function () {
+            _this.scene.stop("GamePlay");
+            _this.scene.start("arcade");
+        });
         this.centerHitbox12 = this.physics.add.sprite(240, 480, null).setOrigin(0.5, 0.5);
         this.centerHitbox12.body.setSize(40, 40);
         this.centerHitbox12.setImmovable(true);
         this.centerHitbox12.setVisible(false);
         this.centerHitbox12.setDebug(true, true, 0xff0000);
-        var fish = this.add.image(this.centerHitbox12.x, this.centerHitbox12.y, 'fish').setOrigin(0.5, 0.5);
-        fish.setScale(0.8).setDepth(1);
+        this.fish = this.add.image(this.centerHitbox12.x, this.centerHitbox12.y, 'fish').setOrigin(0.5, 0.5);
+        this.fish.setScale(0.8).setDepth(1);
         this.tweens.add({
-            targets: [this.centerHitbox12, fish],
+            targets: [this.centerHitbox12, this.fish],
             x: 450,
             y: 320,
             duration: 5000,
             ease: 'Sine.easeInOut',
             yoyo: true,
             repeat: -1
+        });
+        this.physics.add.collider(this.player, this.centerHitbox12, function () {
+            _this.scene.stop("GamePlay");
+            _this.scene.start("casino");
         });
         this.centerHitbox14 = this.physics.add.sprite(440, 820, null).setOrigin(0.5, 0.5);
         this.centerHitbox14.body.setSize(20, 80);
@@ -287,21 +296,21 @@ var GamePlay = /** @class */ (function (_super) {
             }
         }
         var imageDisplayed1 = false;
-        this.physics.add.collider(this.player, this.centerHitbox12, function () {
+        if (casino_1.completeLevel1) {
             if (!imageDisplayed1) {
-                var image = _this.add.image(232, 253, 'spicchiosxsu');
+                var image = this.add.image(232, 253, 'spicchiosxsu');
                 image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(464, 505);
                 imageDisplayed1 = true;
             }
-        });
+        }
         var imageDisplayed2 = false;
-        this.physics.add.collider(this.player, this.centerHitbox11, function () {
+        if (arcade_1.completeLevel2) {
             if (!imageDisplayed2) {
-                var image = _this.add.image(789, 253.5, 'spicchiodxsu');
+                var image = this.add.image(789, 253.5, 'spicchiodxsu');
                 image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(471, 507);
                 imageDisplayed2 = true;
             }
-        });
+        }
     };
     GamePlay.prototype.update = function (time, delta) {
         var _this = this;
@@ -325,6 +334,15 @@ var GamePlay = /** @class */ (function (_super) {
             this.pallaGrande.setVisible(false);
             this.pallaPiccola.setVisible(false);
             this.centerHitbox10.body.enable = false;
+        }
+        if (casino_1.completeLevel1) {
+            this.centerHitbox12.setVisible(false);
+            this.centerHitbox12.body.enable = false;
+            this.fish.setVisible(false);
+        }
+        if (arcade_1.completeLevel2) {
+            this.centerHitbox11.setVisible(false);
+            this.centerHitbox11.body.enable = false;
         }
     };
     return GamePlay;

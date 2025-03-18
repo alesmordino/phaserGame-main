@@ -269,6 +269,11 @@ export default class GamePlay extends Phaser.Scene {
       repeat: -1
     });
 
+    this.physics.add.collider(this.player, this.centerHitbox11, () => {
+      this.scene.stop("GamePlay");
+      this.scene.start("arcade");
+    });
+
     this.centerHitbox12 = this.physics.add.sprite(240, 480,null).setOrigin(0.5, 0.5);
     this.centerHitbox12.body.setSize(40, 40); 
     this.centerHitbox12.setImmovable(true); 
@@ -337,24 +342,20 @@ export default class GamePlay extends Phaser.Scene {
 
     let imageDisplayed1 = false;
     if(completeLevel1){
-      this.physics.add.collider(this.player, this.centerHitbox12, () => {
       if (!imageDisplayed1) {
         const image = this.add.image(232,253, 'spicchiosxsu');
         image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(464, 505);
         imageDisplayed1 = true;
         }
-      });
     }
 
     let imageDisplayed2 = false;
     if(completeLevel2){
-      this.physics.add.collider(this.player, this.centerHitbox11, () => {
       if (!imageDisplayed2) {
         const image = this.add.image(789,253.5, 'spicchiodxsu');
         image.setOrigin(0.5, 0.5).setDepth(1).setDisplaySize(471, 507);
         imageDisplayed2 = true;
-        }
-      });
+      }
     }
   }
 
@@ -380,10 +381,15 @@ export default class GamePlay extends Phaser.Scene {
       this.pallaGrande.setVisible(false);
       this.pallaPiccola.setVisible(false);
       this.centerHitbox10.body.enable = false;
-    }else if(completeLevel1){
+    }
+    if(completeLevel1){
       this.centerHitbox12.setVisible(false);
       this.centerHitbox12.body.enable = false;
       this.fish.setVisible(false);
+    }
+    if(completeLevel2){
+      this.centerHitbox11.setVisible(false);
+      this.centerHitbox11.body.enable = false;
     }
   }
 }

@@ -15,6 +15,10 @@ export default class arcade extends Phaser.Scene {
   }
 
   update(): void {
-
+    this.input.keyboard.on('keydown-E', () => {
+      completeLevel2= true;
+      this.scene.stop('arcade');
+      this.scene.start('GamePlay');
+    });
   }
 }
