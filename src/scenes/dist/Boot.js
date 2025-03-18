@@ -156,12 +156,20 @@ var Boot = /** @class */ (function (_super) {
         this.load.spritesheet("animation", "assets/images/spritesheet_1.png", { frameWidth: 1040, frameHeight: 1040 });
         this.load.spritesheet("animation1", "assets/images/spritesheet_2.png", { frameWidth: 1040, frameHeight: 1040 });
         this.load.spritesheet("bg1", "assets/images/bg1.png", { frameWidth: 2048, frameHeight: 2048 });
+        this.load.image('plane', 'assets/images/plane.png');
+        this.load.image('plane1', 'assets/images/plane1.png');
+        this.load.image('plane2', 'assets/images/plane2.png');
+        this.load.image('pallagrande', 'assets/images/pallagrande.png');
     };
     Boot.prototype.create = function () {
         var _this = this;
         this._logo = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "logo").setScale(0.3);
         this.sprite = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "animation").setVisible(false).setOrigin(0.5, 0.5);
         this.bg = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "bg1").setVisible(false).setScale(0.55);
+        this.plane = this.add.image(0, this.cameras.main.height, 'plane').setScale(0.45).setDepth(1).setVisible(false);
+        this.plane1 = this.add.image(this.cameras.main.width / 1.5, -this.cameras.main.height, 'plane1').setScale(0.45).setDepth(1).setVisible(false);
+        this.plane2 = this.add.image(-this.cameras.main.width, this.cameras.main.height / 2 - 150, 'plane2').setScale(0.45).setDepth(1).setVisible(false);
+        this.pallaGrande = this.add.image(this.cameras.main.width - 200, this.cameras.main.height - 300, 'pallagrande').setScale(1.4).setDepth(1).setVisible(false);
         this.tweens.add({
             targets: this._logo,
             scale: 1.5,
@@ -196,11 +204,56 @@ var Boot = /** @class */ (function (_super) {
                     console.log("Animazione completata");
                     _this.bg.setVisible(true);
                     _this.bg.anims.play("playBG");
+                    _this.bg.once("animationcomplete", function () {
+                        _this.pallaGrande.setVisible(true);
+                        _this.tweens.add({
+                            targets: _this.pallaGrande,
+                            y: _this.cameras.main.height - 400,
+                            duration: 1000,
+                            ease: 'Bounce.easeInOut',
+                            yoyo: true,
+                            repeat: -1
+                        });
+                    });
                 });
             });
-            _this.time.delayedCall(100, function () {
-                _this.scene.start("GamePlay");
-            });
+        });
+    };
+    Boot.prototype.startPlaneAnimations = function () {
+        var _this = this;
+        this.plane.setVisible(true);
+        this.tweens.add({
+            targets: this.plane,
+            x: this.cameras.main.width,
+            y: 0,
+            duration: 4000,
+            ease: 'Linear',
+            onComplete: function () {
+                _this.plane.setVisible(false);
+                _this.plane1.setVisible(true);
+                _this.tweens.add({
+                    targets: _this.plane1,
+                    y: _this.cameras.main.height + _this.plane1.height,
+                    duration: 4000,
+                    ease: 'Linear',
+                    onComplete: function () {
+                        _this.plane1.setVisible(false);
+                        _this.plane2.setVisible(true);
+                        _this.tweens.add({
+                            targets: _this.plane2,
+                            x: _this.cameras.main.width + _this.plane2.width,
+                            duration: 4000,
+                            ease: 'Linear',
+                            onComplete: function () {
+                                _this.plane2.setVisible(false);
+                                _this.time.delayedCall(1000, function () {
+                                    _this.startPlaneAnimations();
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         });
     };
     Boot.prototype.update = function () {
