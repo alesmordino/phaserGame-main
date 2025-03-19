@@ -159,6 +159,9 @@ var Boot = /** @class */ (function (_super) {
         this.load.image('plane1', 'assets/images/plane1.png');
         this.load.image('plane2', 'assets/images/plane2.png');
         this.load.image('pallagrande', 'assets/images/pallagrande.png');
+        this.load.image('fish', 'assets/images/fish.png');
+        this.load.image('gioca', 'assets/images/gioca.png');
+        this.load.image('crediti', 'assets/images/crediti.png');
     };
     Boot.prototype.create = function () {
         var _this = this;
@@ -169,6 +172,7 @@ var Boot = /** @class */ (function (_super) {
         this.plane1 = this.add.image(this.cameras.main.width / 1.5, -this.cameras.main.height, 'plane1').setScale(0.45).setDepth(1).setVisible(false);
         this.plane2 = this.add.image(-this.cameras.main.width, this.cameras.main.height / 2 - 150, 'plane2').setScale(0.45).setDepth(1).setVisible(false);
         this.pallaGrande = this.add.image(this.cameras.main.width - 200, this.cameras.main.height - 300, 'pallagrande').setScale(1.4).setDepth(1).setVisible(false);
+        this.fish = this.add.image(150, this.cameras.main.height - 150, 'fish').setScale(1.2).setDepth(2).setAlpha(1).setVisible(false);
         this.tweens.add({
             targets: this._logo,
             scale: 1.5,
@@ -214,6 +218,23 @@ var Boot = /** @class */ (function (_super) {
                             yoyo: true,
                             repeat: -1
                         });
+                        _this.fish.setVisible(true);
+                        _this.tweens.add({
+                            targets: _this.fish,
+                            alpha: 0.2,
+                            duration: 1000,
+                            ease: 'Linear',
+                            yoyo: true,
+                            repeat: -1,
+                            onYoyo: function () {
+                                _this.fish.setVisible(false);
+                            },
+                            onRepeat: function () {
+                                _this.fish.setVisible(true);
+                            }
+                        });
+                        _this.gioca = _this.add.image(_this.cameras.main.width / 2, _this.cameras.main.height / 2 + 100, 'gioca').setScale(0.5).setDepth(2).setVisible(true);
+                        _this.crediti = _this.add.image(_this.cameras.main.width / 2, _this.cameras.main.height / 2 + 200, 'crediti').setScale(0.5).setDepth(2).setVisible(true);
                         _this.startPlaneAnimations();
                     });
                 });

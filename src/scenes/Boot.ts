@@ -98,6 +98,9 @@ export default class Boot extends Phaser.Scene {
   private plane1: Phaser.GameObjects.Image;
   private plane2: Phaser.GameObjects.Image;
   private pallaGrande: Phaser.GameObjects.Image;
+  private fish: Phaser.GameObjects.Image;
+  private gioca: Phaser.GameObjects.Image;
+  private crediti: Phaser.GameObjects.Image;
 
   constructor() {
     super({ key: "Boot" });
@@ -113,6 +116,9 @@ export default class Boot extends Phaser.Scene {
     this.load.image('plane1', 'assets/images/plane1.png');
     this.load.image('plane2', 'assets/images/plane2.png');
     this.load.image('pallagrande', 'assets/images/pallagrande.png');
+    this.load.image('fish', 'assets/images/fish.png');
+    this.load.image('gioca', 'assets/images/gioca.png');
+    this.load.image('crediti', 'assets/images/crediti.png');
   }
 
   create(): void {
@@ -125,6 +131,7 @@ export default class Boot extends Phaser.Scene {
     this.plane2 = this.add.image(-this.cameras.main.width, this.cameras.main.height / 2 - 150, 'plane2').setScale(0.45).setDepth(1).setVisible(false);
     
     this.pallaGrande = this.add.image(this.cameras.main.width - 200, this.cameras.main.height - 300, 'pallagrande').setScale(1.4).setDepth(1).setVisible(false);
+    this.fish = this.add.image(150, this.cameras.main.height - 150, 'fish').setScale(1.2).setDepth(2).setAlpha(1).setVisible(false);
 
     this.tweens.add({
         targets: this._logo,
@@ -178,6 +185,25 @@ export default class Boot extends Phaser.Scene {
                         yoyo: true,
                         repeat: -1
                     });
+
+                    this.fish.setVisible(true);
+                    this.tweens.add({
+                        targets: this.fish,
+                        alpha: 0.2,
+                        duration: 1000,
+                        ease: 'Linear',
+                        yoyo: true,
+                        repeat: -1,
+                        onYoyo: () => {
+                            this.fish.setVisible(false);
+                        },
+                        onRepeat: () => {
+                            this.fish.setVisible(true);
+                        }
+                    });
+
+                    this.gioca = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 + 100, 'gioca').setScale(0.5).setDepth(2).setVisible(true);
+                    this.crediti = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 + 200, 'crediti').setScale(0.5).setDepth(2).setVisible(true);
                       
                     this.startPlaneAnimations();
                 });
