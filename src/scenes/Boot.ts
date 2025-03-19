@@ -9,7 +9,6 @@ declare global {
   }
 }
 
-// Crea un elemento video, ma non lo aggiunge al DOM
 const videoElement: HTMLVideoElement = document.createElement("video");
 videoElement.autoplay = true;
 
@@ -107,8 +106,8 @@ export default class Boot extends Phaser.Scene {
   preload(): void {
     this.cameras.main.setBackgroundColor("#ffffff");
     this.load.image("logo", "assets/images/logoS.png");
-    this.load.spritesheet("animation", "assets/images/spritesheet_1.png", { frameWidth: 1040, frameHeight: 1040 });
-    this.load.spritesheet("animation1", "assets/images/spritesheet_2.png", { frameWidth: 1040, frameHeight: 1040 });
+    this.load.spritesheet("animation", "assets/images/spritesheet_1.png", { frameWidth: 1024, frameHeight: 1024 });
+    this.load.spritesheet("animation1", "assets/images/spritesheet_2.png", { frameWidth: 1024, frameHeight: 1024 });
     this.load.spritesheet("bg1", "assets/images/bg1.png", { frameWidth: 2048, frameHeight: 2048 });
     this.load.image('plane', 'assets/images/plane.png');
     this.load.image('plane1', 'assets/images/plane1.png');
@@ -136,7 +135,7 @@ export default class Boot extends Phaser.Scene {
 
     this.anims.create({
         key: "playAnimation",
-        frames: this.anims.generateFrameNumbers("animation", { start: 0, end: 8 }),
+        frames: this.anims.generateFrameNumbers("animation", { start: 0, end: 8 }) ,
         frameRate: 2,
         repeat: 0,
     });
@@ -169,6 +168,7 @@ export default class Boot extends Phaser.Scene {
                 this.bg.anims.play("playBG");
 
                 this.bg.once("animationcomplete", () => {
+                    this.bg.setPosition(this.cameras.main.width / 2, this.cameras.main.height / 2);
                     this.pallaGrande.setVisible(true);
                     this.tweens.add({
                         targets: this.pallaGrande,
@@ -187,46 +187,49 @@ export default class Boot extends Phaser.Scene {
   }
 
   startPlaneAnimations(): void {
-    this.plane.setVisible(true);
+    this.plane.setPosition(0, this.cameras.main.height).setVisible(true);
     this.tweens.add({
-      targets: this.plane,
-      x: this.cameras.main.width,
-      y: 0,
-      duration: 4000,
-      ease: 'Linear',
-      onComplete: () => {
-        this.plane.setVisible(false);
-        this.plane1.setVisible(true);
-        this.tweens.add({
-          targets: this.plane1,
-          y: this.cameras.main.height + this.plane1.height,
-          duration: 4000,
-          ease: 'Linear',
-          onComplete: () => {
-            this.plane1.setVisible(false);
-            this.plane2.setVisible(true);
+        targets: this.plane,
+        x: this.cameras.main.width,
+        y: 0,
+        duration: 4000,
+        ease: 'Linear',
+        onComplete: () => {
+            this.plane.setVisible(false);
+            this.plane1.setPosition(this.cameras.main.width / 1.5, -this.cameras.main.height).setVisible(true);
             this.tweens.add({
-              targets: this.plane2,
-              x: this.cameras.main.width + this.plane2.width,
-              duration: 4000,
-              ease: 'Linear',
-              onComplete: () => {
-                this.plane2.setVisible(false);
-                this.time.delayedCall(1000, () => {
-                  this.startPlaneAnimations();
-                });
-              }
+                targets: this.plane1,
+                y: this.cameras.main.height + this.plane1.height,
+                duration: 4000,
+                ease: 'Linear',
+                onComplete: () => {
+                    this.plane1.setVisible(false); 
+                    this.plane2.setPosition(-this.cameras.main.width, this.cameras.main.height / 2 - 150).setVisible(true);
+                    this.tweens.add({
+                        targets: this.plane2,
+                        x: this.cameras.main.width + this.plane2.width,
+                        duration: 4000,
+                        ease: 'Linear',
+                        onComplete: () => {
+                            this.plane2.setVisible(false); 
+                            this.time.delayedCall(1000, () => {
+                                this.startPlaneAnimations();
+                            });
+                        }
+                    });
+                }
             });
-          }
-        });
-      }
+        }
     });
-  }
+}
+
 
   update(): void {
     if (window.currentEmotion && window.currentEmotion !== this.lastEmotion) {
       this.lastEmotion = window.currentEmotion;
       console.log("Emozione aggiornata:", this.lastEmotion);
     }
+    
   }
+  
 }

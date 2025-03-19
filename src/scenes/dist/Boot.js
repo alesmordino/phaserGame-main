@@ -52,7 +52,6 @@ exports.__esModule = true;
 var phaser_1 = require("phaser");
 var face_mesh_1 = require("@mediapipe/face_mesh");
 var camera_utils_1 = require("@mediapipe/camera_utils");
-// Crea un elemento video, ma non lo aggiunge al DOM
 var videoElement = document.createElement("video");
 videoElement.autoplay = true;
 var emotionHistory = [];
@@ -153,8 +152,8 @@ var Boot = /** @class */ (function (_super) {
     Boot.prototype.preload = function () {
         this.cameras.main.setBackgroundColor("#ffffff");
         this.load.image("logo", "assets/images/logoS.png");
-        this.load.spritesheet("animation", "assets/images/spritesheet_1.png", { frameWidth: 1040, frameHeight: 1040 });
-        this.load.spritesheet("animation1", "assets/images/spritesheet_2.png", { frameWidth: 1040, frameHeight: 1040 });
+        this.load.spritesheet("animation", "assets/images/spritesheet_1.png", { frameWidth: 1024, frameHeight: 1024 });
+        this.load.spritesheet("animation1", "assets/images/spritesheet_2.png", { frameWidth: 1024, frameHeight: 1024 });
         this.load.spritesheet("bg1", "assets/images/bg1.png", { frameWidth: 2048, frameHeight: 2048 });
         this.load.image('plane', 'assets/images/plane.png');
         this.load.image('plane1', 'assets/images/plane1.png');
@@ -205,6 +204,7 @@ var Boot = /** @class */ (function (_super) {
                     _this.bg.setVisible(true);
                     _this.bg.anims.play("playBG");
                     _this.bg.once("animationcomplete", function () {
+                        _this.bg.setPosition(_this.cameras.main.width / 2, _this.cameras.main.height / 2);
                         _this.pallaGrande.setVisible(true);
                         _this.tweens.add({
                             targets: _this.pallaGrande,
@@ -222,7 +222,7 @@ var Boot = /** @class */ (function (_super) {
     };
     Boot.prototype.startPlaneAnimations = function () {
         var _this = this;
-        this.plane.setVisible(true);
+        this.plane.setPosition(0, this.cameras.main.height).setVisible(true);
         this.tweens.add({
             targets: this.plane,
             x: this.cameras.main.width,
@@ -231,7 +231,7 @@ var Boot = /** @class */ (function (_super) {
             ease: 'Linear',
             onComplete: function () {
                 _this.plane.setVisible(false);
-                _this.plane1.setVisible(true);
+                _this.plane1.setPosition(_this.cameras.main.width / 1.5, -_this.cameras.main.height).setVisible(true);
                 _this.tweens.add({
                     targets: _this.plane1,
                     y: _this.cameras.main.height + _this.plane1.height,
@@ -239,7 +239,7 @@ var Boot = /** @class */ (function (_super) {
                     ease: 'Linear',
                     onComplete: function () {
                         _this.plane1.setVisible(false);
-                        _this.plane2.setVisible(true);
+                        _this.plane2.setPosition(-_this.cameras.main.width, _this.cameras.main.height / 2 - 150).setVisible(true);
                         _this.tweens.add({
                             targets: _this.plane2,
                             x: _this.cameras.main.width + _this.plane2.width,
