@@ -187,7 +187,7 @@ var Boot = /** @class */ (function (_super) {
         });
         this.anims.create({
             key: "playAnimation1",
-            frames: this.anims.generateFrameNumbers("animation1", { start: 0, end: 8 }),
+            frames: this.anims.generateFrameNumbers("animation1", { start: 0, end: 6 }),
             frameRate: 2,
             repeat: 0
         });
@@ -233,8 +233,8 @@ var Boot = /** @class */ (function (_super) {
                                 _this.fish.setVisible(true);
                             }
                         });
-                        _this.gioca = _this.add.image(_this.cameras.main.width / 2, _this.cameras.main.height / 2 - 50, 'gioca').setScale(0.7).setDepth(2).setVisible(true).setInteractive();
-                        _this.crediti = _this.add.image(_this.cameras.main.width / 2, _this.cameras.main.height / 2 + 25, 'crediti').setScale(0.7).setDepth(2).setVisible(true);
+                        _this.gioca = _this.add.image(_this.cameras.main.width / 2, _this.cameras.main.height / 2 - 50, 'gioca').setScale(0.9).setDepth(2).setVisible(true).setInteractive();
+                        _this.crediti = _this.add.image(_this.cameras.main.width / 2, _this.cameras.main.height / 2 + 25, 'crediti').setScale(0.9).setDepth(2).setVisible(true);
                         _this.gioca.on('pointerdown', function () {
                             _this.scene.start('GamePlay');
                         });

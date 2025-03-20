@@ -149,7 +149,7 @@ export default class Boot extends Phaser.Scene {
 
     this.anims.create({
         key: "playAnimation1",
-        frames: this.anims.generateFrameNumbers("animation1", { start: 0, end: 8 }),
+        frames: this.anims.generateFrameNumbers("animation1", { start: 0, end: 6 }),
         frameRate: 2,
         repeat: 0,
     });
@@ -202,8 +202,8 @@ export default class Boot extends Phaser.Scene {
                         }
                     });
 
-                    this.gioca = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 50, 'gioca').setScale(0.7).setDepth(2).setVisible(true).setInteractive();
-                    this.crediti = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 + 25, 'crediti').setScale(0.7).setDepth(2).setVisible(true);
+                    this.gioca = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 50, 'gioca').setScale(0.9).setDepth(2).setVisible(true).setInteractive();
+                    this.crediti = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 + 25, 'crediti').setScale(0.9).setDepth(2).setVisible(true);
                     this.gioca.on('pointerdown', () => {
                         this.scene.start('GamePlay');
                     });
