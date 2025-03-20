@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
+var phaser_1 = require("phaser");
 var playerstate;
 (function (playerstate) {
     playerstate[playerstate["idle"] = 0] = "idle";
@@ -25,12 +26,13 @@ var playerstate;
     playerstate[playerstate["diagonalesopradestra"] = 7] = "diagonalesopradestra";
     playerstate[playerstate["diagonalesoprasinistra"] = 8] = "diagonalesoprasinistra";
 })(playerstate || (playerstate = {}));
-var playerr = /** @class */ (function (_super) {
-    __extends(playerr, _super);
-    function playerr(scene, x, y) {
+var movingPad = /** @class */ (function (_super) {
+    __extends(movingPad, _super);
+    function movingPad(scene, x, y) {
         var _this = _super.call(this, scene, x, y, 'walk') || this;
         _this._speed = 200; // Velocità del personaggio
         _this._playerstate = playerstate.idle;
+        _this.gamepad = null;
         scene.add.existing(_this);
         scene.physics.add.existing(_this);
         _this.setOrigin(0.5, 0.5);
@@ -78,67 +80,57 @@ var playerr = /** @class */ (function (_super) {
                 frameRate: 9
             });
         }
+        if (!scene.anims.exists("player-walk")) {
+            scene.anims.create({
+                key: "player-walk",
+                frames: scene.anims.generateFrameNumbers("walk", { start: 0, end: 35 }),
+                frameRate: 9,
+                repeat: -1
+            });
+        }
+        if (_this.scene.input.gamepad) {
+            _this.scene.input.gamepad.once('connected', function (pad) {
+                _this.gamepad = pad;
+            });
+        }
         return _this;
     }
-    playerr.prototype.update = function () {
-        var moving = false;
+    movingPad.prototype.setGamepad = function (pad) {
+        this.gamepad = pad;
+    };
+    movingPad.prototype.update = function (cursors, gamepad) {
+        var speed = 200;
         var velocityX = 0;
         var velocityY = 0;
-        if (this.cursors.left.isDown) {
-            velocityX -= this._speed;
-            if (this.cursors.up.isDown) {
-                velocityY -= this._speed;
-                this._playerstate = playerstate.diagonalesoprasinistra;
-                this.anims.play("player-running-sinistra", true);
-            }
-            else if (this.cursors.down.isDown) {
-                velocityY += this._speed;
-                this._playerstate = playerstate.diagonalesottosinistra;
-                this.anims.play("player-running-sinistra", true);
-            }
-            else {
-                this._playerstate = playerstate.sinistra;
-                this.anims.play("player-running-sinistra", true);
-            }
-            moving = true;
+        if (gamepad) {
+            var leftStickX = gamepad.leftStick.x;
+            var leftStickY = gamepad.leftStick.y;
+            velocityX = leftStickX * speed;
+            velocityY = leftStickY * speed;
         }
-        else if (this.cursors.right.isDown) {
-            velocityX += this._speed;
-            if (this.cursors.up.isDown) {
-                velocityY -= this._speed;
-                this._playerstate = playerstate.diagonalesopradestra;
-                this.anims.play("player-running-destra", true);
+        else if (cursors) {
+            if (cursors.left.isDown) {
+                velocityX = -speed;
             }
-            else if (this.cursors.down.isDown) {
-                velocityY += this._speed;
-                this._playerstate = playerstate.diagonalesottodestra;
-                this.anims.play("player-running-destra", true);
+            else if (cursors.right.isDown) {
+                velocityX = speed;
             }
-            else {
-                this._playerstate = playerstate.destra;
-                this.anims.play("player-running-destra", true);
+            if (cursors.up.isDown) {
+                velocityY = -speed;
             }
-            moving = true;
-        }
-        else if (this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
-            velocityY -= this._speed;
-            this._playerstate = playerstate.sopra;
-            this.anims.play("player-running-sopra", true);
-            moving = true;
-        }
-        else if (this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
-            velocityY += this._speed;
-            this._playerstate = playerstate.sotto;
-            this.anims.play("player-running-sotto", true);
-            moving = true;
-        }
-        var magnitude = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
-        if (magnitude > 0) {
-            velocityX = (velocityX / magnitude) * this._speed;
-            velocityY = (velocityY / magnitude) * this._speed;
+            else if (cursors.down.isDown) {
+                velocityY = speed;
+            }
         }
         this.setVelocity(velocityX, velocityY);
+        if (velocityX !== 0 || velocityY !== 0) {
+            this.anims.play("player-walk", true);
+        }
+        else {
+            this.anims.stop();
+            this.setFrame(0);
+        }
     };
-    return playerr;
-}(Phaser.Physics.Arcade.Sprite));
-exports["default"] = playerr;
+    return movingPad;
+}(phaser_1["default"].Physics.Arcade.Sprite));
+exports["default"] = movingPad;

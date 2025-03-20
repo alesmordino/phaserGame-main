@@ -26,41 +26,51 @@ export default class playerr extends Phaser.Physics.Arcade.Sprite implements IPl
     this.body.setOffset(13, 13);
     this.setDebug(true, true, 0x0000ff);
 
-      this.cursors = scene.input.keyboard.createCursorKeys();
+    this.cursors = scene.input.keyboard.createCursorKeys();
 
-    scene.anims.create({
-      key: "player-running-sinistra",
-      frames: scene.anims.generateFrameNumbers("walk", { start: 9, end: 17 }),
-      frameRate: 9,
-      repeat: -1
-    });
+    if (!scene.anims.exists("player-running-sinistra")) {
+      scene.anims.create({
+        key: "player-running-sinistra",
+        frames: scene.anims.generateFrameNumbers("walk", { start: 9, end: 17 }),
+        frameRate: 9,
+        repeat: -1
+      });
+    }
 
-    scene.anims.create({
-      key: "player-running-destra",
-      frames: scene.anims.generateFrameNumbers("walk", { start: 27, end: 35 }),
-      frameRate: 9,
-      repeat: -1
-    });
+    if (!scene.anims.exists("player-running-destra")) {
+      scene.anims.create({
+        key: "player-running-destra",
+        frames: scene.anims.generateFrameNumbers("walk", { start: 27, end: 35 }),
+        frameRate: 9,
+        repeat: -1
+      });
+    }
 
-    scene.anims.create({
-      key: "player-running-sopra",
-      frames: scene.anims.generateFrameNumbers("walk", { start: 0, end: 8 }),
-      frameRate: 9,
-      repeat: -1
-    });
+    if (!scene.anims.exists("player-running-sopra")) {
+      scene.anims.create({
+        key: "player-running-sopra",
+        frames: scene.anims.generateFrameNumbers("walk", { start: 0, end: 8 }),
+        frameRate: 9,
+        repeat: -1
+      });
+    }
 
-    scene.anims.create({
-      key: "player-running-sotto",
-      frames: scene.anims.generateFrameNumbers("walk", { start: 18, end: 26 }),
-      frameRate: 9,
-      repeat: -1
-    });
+    if (!scene.anims.exists("player-running-sotto")) {
+      scene.anims.create({
+        key: "player-running-sotto",
+        frames: scene.anims.generateFrameNumbers("walk", { start: 18, end: 26 }),
+        frameRate: 9,
+        repeat: -1
+      });
+    }
 
-    scene.anims.create({
-      key: "player-idle",
-      frames: [{ key: "walk", frame: 18 }],
-      frameRate: 9
-    });
+    if (!scene.anims.exists("player-idle")) {
+      scene.anims.create({
+        key: "player-idle",
+        frames: [{ key: "walk", frame: 18 }],
+        frameRate: 9
+      });
+    }
   }
 
   update(): void {

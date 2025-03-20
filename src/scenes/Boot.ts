@@ -131,7 +131,7 @@ export default class Boot extends Phaser.Scene {
     this.plane2 = this.add.image(-this.cameras.main.width, this.cameras.main.height / 2 - 150, 'plane2').setScale(0.45).setDepth(1).setVisible(false);
     
     this.pallaGrande = this.add.image(this.cameras.main.width - 200, this.cameras.main.height - 300, 'pallagrande').setScale(1.4).setDepth(1).setVisible(false);
-    this.fish = this.add.image(150, this.cameras.main.height - 150, 'fish').setScale(1.2).setDepth(2).setAlpha(1).setVisible(false);
+    this.fish = this.add.image(150, this.cameras.main.height - 150, 'fish').setScale(1.2).setDepth(2).setAlpha(2).setVisible(false);
 
     this.tweens.add({
         targets: this._logo,
@@ -202,8 +202,11 @@ export default class Boot extends Phaser.Scene {
                         }
                     });
 
-                    this.gioca = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 + 100, 'gioca').setScale(0.5).setDepth(2).setVisible(true);
-                    this.crediti = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 + 200, 'crediti').setScale(0.5).setDepth(2).setVisible(true);
+                    this.gioca = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 50, 'gioca').setScale(0.7).setDepth(2).setVisible(true).setInteractive();
+                    this.crediti = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 + 25, 'crediti').setScale(0.7).setDepth(2).setVisible(true);
+                    this.gioca.on('pointerdown', () => {
+                        this.scene.start('GamePlay');
+                    });
                       
                     this.startPlaneAnimations();
                 });

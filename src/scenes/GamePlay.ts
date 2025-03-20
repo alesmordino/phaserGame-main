@@ -3,11 +3,10 @@ import movingPad from '../scenes/movingPad';
 import { IPlayer } from '../scenes/IPlayer';
 import { completeLevel } from '../scenes/levelManBall';
 import { completeLevel1 } from '../scenes/casino';
-import { completeLevel2 } from '../scenes/arcade';
+import { completeLevel2} from '../scenes/arcade';
 
 export default class GamePlay extends Phaser.Scene {
-  private player: playerr;
-  private player1: movingPad;
+  private player: playerr | movingPad;
   private _voth = 0;
   private map: Phaser.Tilemaps.Tilemap;
   private tileset: Phaser.Tilemaps.Tileset;
@@ -33,6 +32,7 @@ export default class GamePlay extends Phaser.Scene {
   private pallaPiccola: Phaser.GameObjects.Image;
   private fish: Phaser.GameObjects.Image;
   private plane: Phaser.GameObjects.Image;
+  private lastPosition: { x: number, y: number } = { x: 470, y: 930 };
 
   constructor() {
     super({
@@ -62,7 +62,7 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   create() {
-    this.player = new playerr(this, 470, 930);
+    this.player = new playerr(this, this.lastPosition.x, this.lastPosition.y);
     this.map = this.make.tilemap({ key: "level-1" });
     this.tileset = this.map.addTilesetImage("tilemap-extruded");
     this.world = this.map.createLayer("world", this.tileset, 0, 0);
@@ -91,13 +91,14 @@ export default class GamePlay extends Phaser.Scene {
     if (this.input.gamepad) {
       this.input.gamepad.once('connected', (pad: Phaser.Input.Gamepad.Gamepad) => {
         this.gamepad = pad;
-        this.player1 = new movingPad(this, 470, 930);
+        if (this.player instanceof movingPad) {
+          this.player.setGamepad(pad);
+        }
         console.log('Gamepad connected:', pad.id);
       });
 
       this.input.gamepad.once('disconnected', (pad: Phaser.Input.Gamepad.Gamepad) => {
         this.gamepad = null;
-        this.player = new playerr(this, 470, 930);
         console.log('Gamepad disconnected:', pad.id);
       });
     } else {
@@ -250,6 +251,7 @@ export default class GamePlay extends Phaser.Scene {
 
     this.physics.add.collider(this.player, this.collisions);
     this.physics.add.collider(this.player, this.centerHitbox10, () => {
+      this.lastPosition = { x: this.player.x, y: this.player.y };
       this.scene.stop("GamePlay");
       this.scene.start("levelManBall");
     });
@@ -275,6 +277,7 @@ export default class GamePlay extends Phaser.Scene {
     });
 
     this.physics.add.collider(this.player, this.centerHitbox11, () => {
+      this.lastPosition = { x: this.player.x, y: this.player.y };
       this.scene.stop("GamePlay");
       this.scene.start("arcade");
     });
@@ -299,6 +302,7 @@ export default class GamePlay extends Phaser.Scene {
     });
 
     this.physics.add.collider(this.player, this.centerHitbox12, () => {
+      this.lastPosition = { x: this.player.x, y: this.player.y };
       this.scene.stop("GamePlay");
       this.scene.start("casino");
     });
@@ -365,11 +369,10 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   update(time: number, delta: number): void {
-    this.player.update();
     if (this.gamepad) {
-      if (this.gamepad.leftStick.x !== 0 || this.gamepad.leftStick.y !== 0) {
-        this.player.setVelocity(this.gamepad.leftStick.x * 200, this.gamepad.leftStick.y * 200);
-      }
+      (this.player as movingPad).update(null, this.gamepad);
+    } else {
+      (this.player as playerr).update();
     }
     if (this._voth == 0) {
       this.player.setFrame(0);

@@ -26,6 +26,7 @@ var GamePlay = /** @class */ (function (_super) {
         }) || this;
         _this._voth = 0;
         _this.gamepad = null;
+        _this.lastPosition = { x: 470, y: 930 };
         return _this;
     }
     GamePlay.prototype.preload = function () {
@@ -50,7 +51,7 @@ var GamePlay = /** @class */ (function (_super) {
     };
     GamePlay.prototype.create = function () {
         var _this = this;
-        this.player = new moving_1["default"](this, 470, 930);
+        this.player = new moving_1["default"](this, this.lastPosition.x, this.lastPosition.y);
         this.map = this.make.tilemap({ key: "level-1" });
         this.tileset = this.map.addTilesetImage("tilemap-extruded");
         this.world = this.map.createLayer("world", this.tileset, 0, 0);
@@ -77,12 +78,13 @@ var GamePlay = /** @class */ (function (_super) {
         if (this.input.gamepad) {
             this.input.gamepad.once('connected', function (pad) {
                 _this.gamepad = pad;
-                _this.player1 = new movingPad_1["default"](_this, 470, 930);
+                if (_this.player instanceof movingPad_1["default"]) {
+                    _this.player.setGamepad(pad);
+                }
                 console.log('Gamepad connected:', pad.id);
             });
             this.input.gamepad.once('disconnected', function (pad) {
                 _this.gamepad = null;
-                _this.player = new moving_1["default"](_this, 470, 930);
                 console.log('Gamepad disconnected:', pad.id);
             });
         }
@@ -217,6 +219,7 @@ var GamePlay = /** @class */ (function (_super) {
         });
         this.physics.add.collider(this.player, this.collisions);
         this.physics.add.collider(this.player, this.centerHitbox10, function () {
+            _this.lastPosition = { x: _this.player.x, y: _this.player.y };
             _this.scene.stop("GamePlay");
             _this.scene.start("levelManBall");
         });
@@ -237,6 +240,7 @@ var GamePlay = /** @class */ (function (_super) {
             repeat: -1
         });
         this.physics.add.collider(this.player, this.centerHitbox11, function () {
+            _this.lastPosition = { x: _this.player.x, y: _this.player.y };
             _this.scene.stop("GamePlay");
             _this.scene.start("arcade");
         });
@@ -257,6 +261,7 @@ var GamePlay = /** @class */ (function (_super) {
             repeat: -1
         });
         this.physics.add.collider(this.player, this.centerHitbox12, function () {
+            _this.lastPosition = { x: _this.player.x, y: _this.player.y };
             _this.scene.stop("GamePlay");
             _this.scene.start("casino");
         });
@@ -317,11 +322,11 @@ var GamePlay = /** @class */ (function (_super) {
     };
     GamePlay.prototype.update = function (time, delta) {
         var _this = this;
-        this.player.update();
         if (this.gamepad) {
-            if (this.gamepad.leftStick.x !== 0 || this.gamepad.leftStick.y !== 0) {
-                this.player.setVelocity(this.gamepad.leftStick.x * 200, this.gamepad.leftStick.y * 200);
-            }
+            this.player.update(null, this.gamepad);
+        }
+        else {
+            this.player.update();
         }
         if (this._voth == 0) {
             this.player.setFrame(0);
