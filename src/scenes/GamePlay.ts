@@ -370,6 +370,7 @@ export default class GamePlay extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     if (this.gamepad) {
+      
       (this.player as movingPad).update(null, this.gamepad);
     } else {
       (this.player as playerr).update();
