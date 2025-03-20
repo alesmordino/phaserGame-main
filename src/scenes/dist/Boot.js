@@ -175,13 +175,13 @@ var Boot = /** @class */ (function (_super) {
         this.fish = this.add.image(150, this.cameras.main.height - 150, 'fish').setScale(1.2).setDepth(2).setAlpha(2).setVisible(false);
         this.tweens.add({
             targets: this._logo,
-            scale: 1.5,
+            scale: 1.45,
             duration: 3000,
             ease: "Sine.easeInOut"
         });
         this.anims.create({
             key: "playAnimation",
-            frames: this.anims.generateFrameNumbers("animation", { start: 0, end: 8 }),
+            frames: this.anims.generateFrameNumbers("animation", { start: 0, end: 6 }),
             frameRate: 2,
             repeat: 0
         });

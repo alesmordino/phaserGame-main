@@ -135,14 +135,14 @@ export default class Boot extends Phaser.Scene {
 
     this.tweens.add({
         targets: this._logo,
-        scale: 1.5,
+        scale: 1.45,
         duration: 3000,
         ease: "Sine.easeInOut",
     });
 
     this.anims.create({
         key: "playAnimation",
-        frames: this.anims.generateFrameNumbers("animation", { start: 0, end: 8 }) ,
+        frames: this.anims.generateFrameNumbers("animation", { start: 0, end: 6 }) ,
         frameRate: 2,
         repeat: 0,
     });
