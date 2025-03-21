@@ -370,8 +370,30 @@ export default class GamePlay extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     if (this.gamepad) {
-      
-      (this.player as movingPad).update(null, this.gamepad);
+      // Get the left stick values from the gamepad
+      const { x, y } = this.gamepad.leftStick;
+  
+      // Update player velocity
+      if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
+        this.player.setVelocityX(x * 200);
+        this.player.setVelocityY(y * 200);
+  
+        // Determine the direction and play the appropriate animation
+        if (x > 0) {
+          this.player.anims.play("player-running-destra", true); // Moving right
+        } else if (x < 0) {
+          this.player.anims.play("player-running-sinistra", true); // Moving left
+        } else if (y > 0) {
+          this.player.anims.play("player-running-sotto", true); // Moving down
+        } else if (y < 0) {
+          this.player.anims.play("player-running-sopra", true); // Moving up
+        }
+      } else {
+        // If no movement, play idle animation
+        this.player.setVelocityX(0);
+        this.player.setVelocityY(0);
+        this.player.anims.play("player-idle", true);
+      }
     } else {
       (this.player as playerr).update();
     }
