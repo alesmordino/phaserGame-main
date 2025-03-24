@@ -21,7 +21,6 @@ export default class Boot extends Phaser.Scene {
   private pallaGrande: Phaser.GameObjects.Image;
   private fish: Phaser.GameObjects.Image;
   private gioca: Phaser.GameObjects.Image;
-  private crediti: Phaser.GameObjects.Image;
 
   constructor() {
     super({ key: "Boot" });
@@ -124,11 +123,27 @@ export default class Boot extends Phaser.Scene {
                     });
 
                     this.gioca = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 50, 'gioca').setScale(0.9).setDepth(2).setVisible(true).setInteractive();
-                    this.crediti = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 + 25, 'crediti').setScale(0.9).setDepth(2).setVisible(true);
                     this.gioca.on('pointerdown', () => {
                         this.scene.start('GamePlay');
                     });
-                      
+                    this.gioca.on('pointerover', () => {
+                      this.tweens.add({
+                          targets: this.gioca,
+                          scale: 1.1,
+                          duration: 200,
+                          ease: 'Linear'
+                      });
+                  });
+                  
+                  this.gioca.on('pointerout', () => {
+                      this.tweens.add({
+                          targets: this.gioca,
+                          scale: 0.9,
+                          duration: 200,
+                          ease: 'Linear'
+                      });
+                  });
+                  
                     this.startPlaneAnimations();
                 });
             });
