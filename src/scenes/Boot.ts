@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { setupCamera, startFaceMesh } from "./FaceTracking";
 import { GameData } from "../GameData";
+export let emozioneBoot: string = "neutro";
 
 declare global {
   interface Window {
@@ -11,7 +12,6 @@ declare global {
 
 export default class Boot extends Phaser.Scene {
   private lastEmotion: string = "neutro";
-  private emozioneBoot: string = "neutro";
   private _logo: Phaser.GameObjects.Sprite;
   private bg: Phaser.GameObjects.Sprite;
   private sprite: Phaser.GameObjects.Sprite;
@@ -196,9 +196,9 @@ export default class Boot extends Phaser.Scene {
       console.log("Emozione aggiornata:", this.lastEmotion);
     }
 
-    if (window.mostFrequentEmotion && window.mostFrequentEmotion !== this.emozioneBoot) {
-      this.emozioneBoot = window.mostFrequentEmotion;
-      console.log("Emozione più rilevata:", this.emozioneBoot);
+    if (window.mostFrequentEmotion && window.mostFrequentEmotion !== emozioneBoot) {
+      emozioneBoot = window.mostFrequentEmotion;
+      console.log("Emozione più rilevata:", emozioneBoot);
     }
   }
 }
