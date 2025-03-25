@@ -38,7 +38,6 @@ export default class Boot extends Phaser.Scene {
     this.load.image('pallagrande', 'assets/images/pallagrande.png');
     this.load.image('fish', 'assets/images/fish.png');
     this.load.image('gioca', 'assets/images/gioca.png');
-    this.load.image('crediti', 'assets/images/crediti.png');
   }
 
   create(): void {
@@ -150,7 +149,9 @@ export default class Boot extends Phaser.Scene {
         });
     });
 
-    setupCamera().then(startFaceMesh);
+    setupCamera().then(() => {
+        startFaceMesh();
+      });
   }
 
   startPlaneAnimations(): void {

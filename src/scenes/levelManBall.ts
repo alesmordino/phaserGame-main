@@ -22,25 +22,26 @@ export default class levelManBall extends Phaser.Scene {
   }
 
   create(): void {
-    this.input.keyboard.on('keydown-E', () => {
-      completeLevel= true;
-      this.scene.stop('levelManBall');
-      this.scene.start('GamePlay');
+    setupCamera().then(() => {
+      startFaceMesh();
     });
-    setupCamera().then(startFaceMesh);
   }
 
     update(): void {
-      if (window.currentEmotion && window.currentEmotion !== this.lastEmotion1) {
-        this.lastEmotion1 = window.currentEmotion;
+      this.input.keyboard.on('keydown-E', () => {
+        completeLevel= true;
+        this.scene.stop('levelManBall');
+        this.scene.start('GamePlay');
+      });
+      
+      if (window.currentEmotion1 && window.currentEmotion1 !== this.lastEmotion1) {
+        this.lastEmotion1 = window.currentEmotion1;
         console.log("Emozione aggiornata:", this.lastEmotion1);
       }
   
-      if (window.mostFrequentEmotion && window.mostFrequentEmotion !== emotionLevelManBall) {
-        emotionLevelManBall = window.mostFrequentEmotion;
-        console.log("Emozione più rilevata:", emotionLevelManBall
-
-        );
+      if (window.mostFrequentEmotion1 && window.mostFrequentEmotion1 !== emotionLevelManBall) {
+        emotionLevelManBall = window.mostFrequentEmotion1;
+        console.log("Emozione più rilevata:", emotionLevelManBall);
       }
     }
 }

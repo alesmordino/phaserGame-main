@@ -8,10 +8,12 @@ export default class casino extends Phaser.Scene {
   }
 
   preload(): void {
-
+    this.load.image("casino", "assets/images/tavoloPoker.png");
   }
 
   create(): void {
+    this.cameras.main.setBackgroundColor('#000000');
+    this.add.image(this.cameras.main.centerX,this.cameras.main.centerY, "casino").setOrigin(0.5);
   }
 
   update(): void {
