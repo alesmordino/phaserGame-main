@@ -279,6 +279,20 @@ var GamePlay = /** @class */ (function (_super) {
             },
             loop: true
         });
+        this.hitboxFinale = this.physics.add.sprite(360, 765, null).setOrigin(0.5, 0.5);
+        this.hitboxFinale.body.setSize(40, 40);
+        this.hitboxFinale.setImmovable(true);
+        this.hitboxFinale.setVisible(false);
+        this.hitboxFinale.setDebug(true, true, 0xff0000);
+        this.tweens.add({
+            targets: [this.hitboxFinale],
+            x: 210,
+            y: 605,
+            duration: 5000,
+            ease: 'Sine.easeInOut',
+            yoyo: true,
+            repeat: -1
+        });
         this.physics.add.collider(this.player, this.collisions);
         this.physics.add.collider(this.player, this.centerHitbox);
         this.physics.add.collider(this.player, this.centerHitbox1);
@@ -323,7 +337,32 @@ var GamePlay = /** @class */ (function (_super) {
     GamePlay.prototype.update = function (time, delta) {
         var _this = this;
         if (this.gamepad) {
-            this.player.update(null, this.gamepad);
+            // Get the left stick values from the gamepad
+            var _a = this.gamepad.leftStick, x = _a.x, y = _a.y;
+            // Update player velocity
+            if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
+                this.player.setVelocityX(x * 200);
+                this.player.setVelocityY(y * 200);
+                // Determine the direction and play the appropriate animation
+                if (x > 0) {
+                    this.player.anims.play("player-running-destra", true); // Moving right
+                }
+                else if (x < 0) {
+                    this.player.anims.play("player-running-sinistra", true); // Moving left
+                }
+                else if (y > 0) {
+                    this.player.anims.play("player-running-sotto", true); // Moving down
+                }
+                else if (y < 0) {
+                    this.player.anims.play("player-running-sopra", true); // Moving up
+                }
+            }
+            else {
+                // If no movement, play idle animation
+                this.player.setVelocityX(0);
+                this.player.setVelocityY(0);
+                this.player.anims.play("player-idle", true);
+            }
         }
         else {
             this.player.update();

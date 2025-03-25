@@ -323,22 +323,21 @@ export default class GamePlay extends Phaser.Scene {
       },
       loop: true
     });
+    this.hitboxFinale = this.physics.add.sprite(360, 765, null).setOrigin(0.5, 0.5);
+    this.hitboxFinale.body.setSize(40, 40); 
+    this.hitboxFinale.setImmovable(true); 
+    this.hitboxFinale.setVisible(false); 
+    this.hitboxFinale.setDebug(true, true, 0xff0000);
 
-  this.hitboxFinale = this.physics.add.sprite((this.centerHitbox1.x + this.centerHitbox14.x)/2,(this.centerHitbox1.y + this.centerHitbox14.y)/2, null).setOrigin(0.5, 0.5);
-this.hitboxFinale.body.setSize(40, 40); 
-this.hitboxFinale.setImmovable(true);
-this.hitboxFinale.setVisible(false); 
-this.hitboxFinale.setDebug(true, true, 0xff0000);
-
-this.tweens.add({
-  targets: [this.hitboxFinale],
-  x: 395,
-  y: 302,
-  duration: 5000,
-  ease: 'Sine.easeInOut',
-  yoyo: true,
-  repeat: -1
-});
+    this.tweens.add({
+      targets: [this.hitboxFinale],
+      x: 210,
+      y: 605,
+      duration: 5000,
+      ease: 'Sine.easeInOut',
+      yoyo: true,
+      repeat: -1
+    });
 
     this.physics.add.collider(this.player, this.collisions);
     this.physics.add.collider(this.player, this.centerHitbox);
