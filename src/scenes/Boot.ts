@@ -141,7 +141,7 @@ export default class Boot extends Phaser.Scene {
                             this.fish.setVisible(true);
                         }
                     });
-                    this.logo = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 250, "logoH").setScale(0.8); 
+                    this.logo = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 300, "logoH").setScale(0.8); 
                     this.gioca = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 50, 'gioca').setScale(0.9).setDepth(2).setVisible(true).setInteractive();
                     this.gioca.on('pointerdown', () => {
                         this.scene.start('GamePlay');
