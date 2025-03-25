@@ -27,6 +27,7 @@ export default class GamePlay extends Phaser.Scene {
   private centerHitbox12: Phaser.Physics.Arcade.Sprite;
   private centerHitbox13: Phaser.Physics.Arcade.Sprite;
   private centerHitbox14: Phaser.Physics.Arcade.Sprite;
+  private hitboxFinale: Phaser.Physics.Arcade.Sprite;
   private gamepad: Phaser.Input.Gamepad.Gamepad | null = null;
   private pallaGrande: Phaser.GameObjects.Image;
   private pallaPiccola: Phaser.GameObjects.Image;
@@ -322,6 +323,22 @@ export default class GamePlay extends Phaser.Scene {
       },
       loop: true
     });
+
+    this.hitboxFinale = this.physics.add.sprite(500, 500, null).setOrigin(0.5, 0.5);
+this.hitboxFinale.body.setSize(40, 40); 
+this.hitboxFinale.setImmovable(true);
+this.hitboxFinale.setVisible(false); 
+this.hitboxFinale.setDebug(true, true, 0xff0000);
+
+this.tweens.add({
+  targets: [this.hitboxFinale],
+  x: 300,
+  y: 300,
+  duration: 5000,
+  ease: 'Sine.easeInOut',
+  yoyo: true,
+  repeat: -1
+});
 
     this.physics.add.collider(this.player, this.collisions);
     this.physics.add.collider(this.player, this.centerHitbox);
