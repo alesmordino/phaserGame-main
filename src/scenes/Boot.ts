@@ -163,7 +163,7 @@ export default class Boot extends Phaser.Scene {
                   this.gioca.on('pointerout', () => {
                       this.tweens.add({
                           targets: this.gioca,
-                          scale: 0.9,
+                          scale: 0.7, // Torna alle dimensioni iniziali
                           duration: 200,
                           ease: 'Linear'
                       });

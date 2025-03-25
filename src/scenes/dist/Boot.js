@@ -147,7 +147,7 @@ var Boot = /** @class */ (function (_super) {
                         _this.gioca.on('pointerout', function () {
                             _this.tweens.add({
                                 targets: _this.gioca,
-                                scale: 0.9,
+                                scale: 0.7,
                                 duration: 200,
                                 ease: 'Linear'
                             });
