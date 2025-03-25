@@ -3,8 +3,8 @@ exports.__esModule = true;
 exports.GameData = void 0;
 exports.GameData = {
     globals: {
-        gameWidth: 1040,
-        gameHeight: 1040,
+        gameWidth: 1024,
+        gameHeight: 1024,
         bgColor: "#ffffff",
         debug: false
     },
@@ -44,7 +44,7 @@ exports.GameData = {
     ],
     sounds: [
     /*{
-    name: "music",
+    name: "colonna",
     paths: ["assets/sounds/intro.ogg", "assets/sounds/intro.m4a"],
     volume: 1,
     loop: true,

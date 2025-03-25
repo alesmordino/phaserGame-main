@@ -49,7 +49,7 @@ export let GameData: gameData = {
 
   sounds: [
     /*{
-    name: "music",
+    name: "colonna",
     paths: ["assets/sounds/intro.ogg", "assets/sounds/intro.m4a"],
     volume: 1,
     loop: true,
