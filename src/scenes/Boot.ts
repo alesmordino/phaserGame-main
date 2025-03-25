@@ -14,6 +14,7 @@ export default class Boot extends Phaser.Scene {
   private lastEmotion: string = "neutro";
   private _logo: Phaser.GameObjects.Sprite;
   private bg: Phaser.GameObjects.Sprite;
+  private logo: Phaser.GameObjects.Image;
   private sprite: Phaser.GameObjects.Sprite;
   private plane: Phaser.GameObjects.Image;
   private plane1: Phaser.GameObjects.Image;
@@ -21,6 +22,7 @@ export default class Boot extends Phaser.Scene {
   private pallaGrande: Phaser.GameObjects.Image;
   private fish: Phaser.GameObjects.Image;
   private gioca: Phaser.GameObjects.Image;
+  private suggeritore: Phaser.GameObjects.Image;
 
   constructor() {
     super({ key: "Boot" });
@@ -38,14 +40,16 @@ export default class Boot extends Phaser.Scene {
     this.load.image('pallagrande', 'assets/images/pallagrande.png');
     this.load.image('fish', 'assets/images/fish.png');
     this.load.image('gioca', 'assets/images/gioca.png');
+    this.load.image('suggeritore', 'assets/images/suggeritore.png');
+    this.load.image('logoH', 'assets/images/logoGiocoHome.PNG');
   }
 
   create(): void {
     this._logo = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "logo").setScale(0.3);
     this.sprite = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "animation").setVisible(false).setOrigin(0.5, 0.5);
     this.bg = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "bg1").setVisible(false).setScale(0.55);
-    
-    this.plane = this.add.image(0, this.cameras.main.height, 'plane').setScale(0.45).setDepth(1).setVisible(false);
+    this.suggeritore = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "suggeritore").setVisible(false).setScale(0.15).setAlpha(0.3);
+    this.plane = this.add.image(0, this.cameras.main.height, 'plane').setScale(0.4).setDepth(1).setVisible(false);
     this.plane1 = this.add.image(this.cameras.main.width / 1.5, -this.cameras.main.height, 'plane1').setScale(0.45).setDepth(1).setVisible(false);
     this.plane2 = this.add.image(-this.cameras.main.width, this.cameras.main.height / 2 - 150, 'plane2').setScale(0.45).setDepth(1).setVisible(false);
     
@@ -98,13 +102,30 @@ export default class Boot extends Phaser.Scene {
                     this.pallaGrande.setVisible(true);
                     this.tweens.add({
                         targets: this.pallaGrande,
-                        y: this.cameras.main.height - 400,
+                        y: this.cameras.main.height - 450,
                         duration: 1000,
                         ease: 'Bounce.easeInOut',
                         yoyo: true,
                         repeat: -1
                     });
-
+                    this.suggeritore.setVisible(true);
+                    this.suggeritore.setVisible(true).setAlpha(0.3);
+                this.tweens.add({
+    targets: this.suggeritore,
+    scale: 0.25, 
+    alpha: 1, // Aumenta l'opacità da 0.3 a 1
+    y: this.cameras.main.height / 2 + 100, // Regola la posizione finale se necessario
+    duration: 4000,
+    ease: 'Sine.easeInOut',
+    onUpdate: (tween) => {
+        // Spostati indietro regolando la profondità (depth)
+        //this.suggeritore.setDepth(2 - tween.progress * 10); // Regola la profondità se necessario
+    },
+    onComplete: () => {
+        // Dopo un certo periodo di tempo, fai scomparire l'immagine
+            this.suggeritore.setVisible(true);
+    }
+});
                     this.fish.setVisible(true);
                     this.tweens.add({
                         targets: this.fish,
@@ -120,7 +141,7 @@ export default class Boot extends Phaser.Scene {
                             this.fish.setVisible(true);
                         }
                     });
-
+                    this.logo = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 250, "logoH").setScale(0.8); 
                     this.gioca = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 50, 'gioca').setScale(0.9).setDepth(2).setVisible(true).setInteractive();
                     this.gioca.on('pointerdown', () => {
                         this.scene.start('GamePlay');
