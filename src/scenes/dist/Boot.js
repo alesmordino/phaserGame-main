@@ -38,9 +38,12 @@ var Boot = /** @class */ (function (_super) {
         this.load.image('gioca', 'assets/images/gioca.png');
         this.load.image('suggeritore', 'assets/images/suggeritore.png');
         this.load.image('logoH', 'assets/images/logoGiocoHome.PNG');
+        this.load.audio('colonna', 'assets/audio/colonna.mp3');
     };
     Boot.prototype.create = function () {
         var _this = this;
+        this.music = this.sound.add('colonna', { loop: true });
+        this.music.play();
         this._logo = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "logo").setScale(0.3);
         this.sprite = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "animation").setVisible(false).setOrigin(0.5, 0.5);
         this.bg = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "bg1").setVisible(false).setScale(0.55);
