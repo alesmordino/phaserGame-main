@@ -39,6 +39,10 @@ export let GameData: gameData = {
       path: "assets/map/level-0.json" 
     },
     { 
+      key: "manball", 
+      path: "assets/map/manballlevel.json" 
+    },
+    { 
       key: "level-1", 
       path: "assets/map/level-1.json" 
     },{ 
