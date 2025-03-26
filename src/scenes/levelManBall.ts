@@ -57,7 +57,6 @@ export default class levelManBall extends Phaser.Scene {
 
   create() {
     this.pallaPiccola = new PallaPiccola(this, 75, 85);
-
     this.sound.play('music', { loop: true });
 
     this.map = this.make.tilemap({ key: "manball" });
@@ -84,9 +83,9 @@ export default class levelManBall extends Phaser.Scene {
 
     // Mostra il video e riproduce il suono ogni 5 secondi
       this.time.addEvent({
-        delay: 5000, // 5 secondi
+        delay: 10000, 
         callback: () => {
-        const video = this.add.video(this.cameras.main.centerX, this.cameras.main.centerY, 'anima');
+        const video = this.add.video(this.cameras.main.centerX + 50, this.cameras.main.centerY + 50, 'anima');
         video.setDepth(3);
         video.setScale(0.5);
         video.play(true);
@@ -118,13 +117,9 @@ export default class levelManBall extends Phaser.Scene {
     this.image3.setDisplaySize(70,70);
     this.image3.setVisible(true);
 
-    const mapWidth = this.map.widthInPixels;
-    const mapHeight = this.map.heightInPixels;
-
     // Imposta i limiti della fotocamera in base alle dimensioni della mappa
-    this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
-    this.cameras.main.startFollow(this.pallaPiccola);
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setBounds(0, 0, 1080, 1080);
+    this.cameras.main.setZoom(0.95);
     this.cameras.main.setBackgroundColor('#000000');
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,7 +252,7 @@ export default class levelManBall extends Phaser.Scene {
       {
         this.interagisciBox.setVisible(false);
         this.interagisciText.setVisible(false);
-        const doorVideo = this.add.video(this.cameras.main.centerX, this.cameras.main.centerY, 'portale');
+        const doorVideo = this.add.video(this.cameras.main.centerX + 50, this.cameras.main.centerY + 50, 'portale');
         doorVideo.setDepth(4);
         doorVideo.setScale(this.cameras.main.zoom);
         doorVideo.play(true);
@@ -292,7 +287,7 @@ export default class levelManBall extends Phaser.Scene {
       {
         this.interagisciBox1.setVisible(false);
         this.interagisciText1.setVisible(false);
-        const doorVideo = this.add.video(this.cameras.main.centerX, this.cameras.main.centerY, 'portabia');
+        const doorVideo = this.add.video(this.cameras.main.centerX + 50, this.cameras.main.centerY + 50, 'portabia');
         doorVideo.setDepth(4);
         doorVideo.setScale(this.cameras.main.zoom);
         doorVideo.play(true);
@@ -328,7 +323,7 @@ export default class levelManBall extends Phaser.Scene {
       {
         this.interagisciBox2.setVisible(false);
         this.interagisciText2.setVisible(false);
-        const doorVideo = this.add.video(this.cameras.main.centerX, this.cameras.main.centerY, 'portave');
+        const doorVideo = this.add.video(this.cameras.main.centerX +50, this.cameras.main.centerY + 50, 'portave');
         doorVideo.setDepth(4);
         doorVideo.setScale(this.cameras.main.zoom);
         doorVideo.play(true);
