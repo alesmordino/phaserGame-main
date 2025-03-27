@@ -14,6 +14,7 @@ export default class levelManBall extends Phaser.Scene {
   private teleporter5: Phaser.Physics.Arcade.Sprite;
   private teleporter6: Phaser.Physics.Arcade.Sprite;
   private teleporter7: Phaser.Physics.Arcade.Sprite;
+  private teleporter8: Phaser.Physics.Arcade.Sprite;
   private centerHitbox: Phaser.Physics.Arcade.Sprite;
   private centerHitbox1: Phaser.Physics.Arcade.Sprite;
   private centerHitbox2: Phaser.Physics.Arcade.Sprite;
@@ -22,10 +23,12 @@ export default class levelManBall extends Phaser.Scene {
   private interagisciText1: Phaser.GameObjects.Text;
   private interagisciText2: Phaser.GameObjects.Text;
   private interagisciText3: Phaser.GameObjects.Text;
+  private interagisciText4: Phaser.GameObjects.Text;
   private interagisciBox: Phaser.GameObjects.Rectangle;
   private interagisciBox1: Phaser.GameObjects.Rectangle;
   private interagisciBox2: Phaser.GameObjects.Rectangle;
   private interagisciBox3: Phaser.GameObjects.Rectangle;
+  private interagisciBox4: Phaser.GameObjects.Rectangle;
   private image1: Phaser.GameObjects.Image;
   private image2: Phaser.GameObjects.Image;
   private image3: Phaser.GameObjects.Image;
@@ -56,7 +59,7 @@ export default class levelManBall extends Phaser.Scene {
   }
 
   create() {
-    this.pallaPiccola = new PallaPiccola(this, 75, 85);
+    this.pallaPiccola = new PallaPiccola(this, 85, 120);
     this.sound.play('music', { loop: true });
 
     this.map = this.make.tilemap({ key: "manball" });
@@ -164,6 +167,11 @@ export default class levelManBall extends Phaser.Scene {
     this.teleporter7.setDisplaySize(20, 20);
     this.teleporter7.setVisible(false);
     this.physics.add.overlap(this.pallaPiccola, this.teleporter7, this.teleportPlayer7, undefined, this);
+    
+    this.teleporter8 = this.physics.add.sprite(880, 800, 'teleporter');
+    this.teleporter8.setDisplaySize(20, 20);
+    this.teleporter8.setVisible(false);
+    this.physics.add.overlap(this.pallaPiccola, this.teleporter8, this.teleportPlayer8, undefined, this);
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,6 +201,7 @@ export default class levelManBall extends Phaser.Scene {
     this.centerHitbox3.setDebug(true, true, 0xff0000);
 
 
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,6 +209,7 @@ export default class levelManBall extends Phaser.Scene {
     this.physics.add.collider(this.pallaPiccola, this.centerHitbox);
     this.physics.add.collider(this.pallaPiccola, this.centerHitbox1);
     this.physics.add.collider(this.pallaPiccola, this.centerHitbox2);
+    this.physics.add.collider(this.pallaPiccola, this.centerHitbox3);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +235,10 @@ export default class levelManBall extends Phaser.Scene {
     this.interagisciText3 = this.add.text(100, 933, 'Interagisci', { fontSize: '16px', color: '#fff' }); // Testo bianco
     this.interagisciText3.setVisible(false);
 
+    this.interagisciBox4 = this.add.rectangle(695, 440, 120, 30, 0x000000); // Nero
+    this.interagisciBox4.setVisible(false);
+    this.interagisciText4 = this.add.text(695, 440, 'Interagisci', { fontSize: '16px', color: '#fff' }); // Testo bianco
+    this.interagisciText4.setVisible(false);
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,6 +346,29 @@ export default class levelManBall extends Phaser.Scene {
         this.time.delayedCall(5000, () => {
           doorVideo.destroy();
         });
+      }
+    }
+    const distance3 = Phaser.Math.Distance.Between(this.pallaPiccola.x, this.pallaPiccola.y, this.centerHitbox3.x, this.centerHitbox3.y);
+        if (distance3 < 50) {
+          this.interagisciBox4.setVisible(true);
+          this.interagisciText4.setVisible(true);
+          this.interagisciBox4.setDepth(2);
+          this.interagisciText4.setDepth(2);
+          if(this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) 
+          {
+            this.interagisciBox4.setVisible(false);
+            this.interagisciText4.setVisible(false);
+            const doorVideo = this.add.video(this.cameras.main.centerX +50, this.cameras.main.centerY + 50, 'portave');
+            doorVideo.setDepth(4);
+            doorVideo.setScale(this.cameras.main.zoom);
+            doorVideo.play(true);
+            this.sound.play('urlo1');
+            // Rimuovi il video dopo che è terminato
+            this.time.delayedCall(5000, () => {
+              doorVideo.destroy();
+            });
+          }
+        }
 
         if (this.image1.visible && this.image2.visible && this.image3.visible) {
           this.image1.setVisible(false);
@@ -342,8 +379,7 @@ export default class levelManBall extends Phaser.Scene {
           console.log('game over');
           this.scene.stop('level-1');
           this.scene.start('GamePlay');
-        }
-      }
+
     } else {
       this.interagisciBox2.setVisible(false);
       this.interagisciText2.setVisible(false);
@@ -378,5 +414,8 @@ export default class levelManBall extends Phaser.Scene {
   }
   private teleportPlayer7(): void {
     this.pallaPiccola.setPosition(980, 850); // Cambia la posizione del personaggio
+  }
+  private teleportPlayer8(): void {
+    this.pallaPiccola.setPosition(695, 440); // Cambia la posizione del personaggio
   }
 }
