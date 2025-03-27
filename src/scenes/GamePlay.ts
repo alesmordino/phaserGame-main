@@ -33,6 +33,7 @@ export default class GamePlay extends Phaser.Scene {
   private pallaPiccola: Phaser.GameObjects.Image;
   private fish: Phaser.GameObjects.Image;
   private plane: Phaser.GameObjects.Image;
+  private suggeritore: Phaser.GameObjects.Image;
   private lastPosition: { x: number, y: number } = { x: 470, y: 930 };
 
   constructor() {
@@ -59,6 +60,8 @@ export default class GamePlay extends Phaser.Scene {
     this.load.image('spicchiodxsu', 'assets/images/spicchiodestrasu.png');
     this.load.image('fish', 'assets/images/fish.png');
     this.load.image('plane', 'assets/images/plane.png');
+    this.load.image('suggeritore', 'assets/images/suggeritore.png');
+
     this.physics.world.createDebugGraphic();
   }
 
@@ -89,7 +92,21 @@ export default class GamePlay extends Phaser.Scene {
     this.cameras.main.setScroll(mapWidth / 2 - this.cameras.main.width / 2, mapHeight / 2 - this.cameras.main.height / 2);
     this.cameras.main.setZoom(1);
 
-    
+    this.suggeritore = this.add.image(this.cameras.main.width - 45, 60, 'suggeritore');
+    this.suggeritore.setScale(0.2).setDepth(2).setAlpha(0.8);
+
+    this.tweens.add({
+      targets: this.suggeritore,
+      scale: 0.25,
+      alpha: 1,
+      duration: 2000,
+      ease: 'Sine.easeInOut',
+      yoyo: true,
+      repeat: -1
+    });
+
+
+
     this.centerHitbox = this.physics.add.sprite(573, 140, null).setOrigin(0.5, 0.5);
     this.centerHitbox.body.setSize(20, 80); 
     this.centerHitbox.setImmovable(true);
@@ -206,7 +223,7 @@ export default class GamePlay extends Phaser.Scene {
     this.pallaGrande.setScale(1).setDepth(1); 
 
     this.pallaPiccola = this.add.image(this.centerHitbox10.x, this.centerHitbox10.y, 'pallapiccola').setOrigin(0.5, 0.5);
-    this.pallaPiccola.setScale(0.5).setDepth(1); 
+    this.pallaPiccola.setScale(0.8).setDepth(1); 
     this.pallaPiccola.setVisible(false); 
 
     let isLargeBall = true;

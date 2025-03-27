@@ -37,7 +37,7 @@ var Boot = /** @class */ (function (_super) {
         this.load.image('fish', 'assets/images/fish.png');
         this.load.image('gioca', 'assets/images/gioca.png');
         this.load.image('suggeritore', 'assets/images/suggeritore.png');
-        this.load.image('logoH', 'assets/images/logoGiocoHome.PNG');
+        this.load.image('logoH', 'assets/images/logoGiocoHome.png');
         this.load.audio('colonna', 'assets/sounds/colonna.mp3');
     };
     Boot.prototype.create = function () {

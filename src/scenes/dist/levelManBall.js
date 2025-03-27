@@ -43,6 +43,7 @@ var levelManBall = /** @class */ (function (_super) {
         this.load.video('portale', 'assets/images/portale.mp4');
         this.load.video('portave', 'assets/images/portave.mp4');
         this.load.image('black', 'assets/images/black.png');
+        this.load.image('suggeritore', 'assets/images/suggeritore.png');
         this.physics.world.createDebugGraphic();
     };
     levelManBall.prototype.create = function () {
@@ -103,6 +104,18 @@ var levelManBall = /** @class */ (function (_super) {
         this.image3.setDepth(2);
         this.image3.setDisplaySize(70, 70);
         this.image3.setVisible(true);
+        // Aggiungi il suggeritore in alto a destra
+        this.suggeritore = this.add.image(this.cameras.main.width - 30, 100, 'suggeritore');
+        this.suggeritore.setScale(0.2).setDepth(2).setAlpha(0.8);
+        this.tweens.add({
+            targets: this.suggeritore,
+            scale: 0.25,
+            alpha: 1,
+            duration: 2000,
+            ease: 'Sine.easeInOut',
+            yoyo: true,
+            repeat: -1
+        });
         // Imposta i limiti della fotocamera in base alle dimensioni della mappa
         this.cameras.main.setBounds(0, 0, 1080, 1080);
         this.cameras.main.setZoom(0.95);
@@ -358,6 +371,7 @@ var levelManBall = /** @class */ (function (_super) {
                 // Rimuovi il video dopo che è terminato
                 this.time.delayedCall(5000, function () {
                     doorVideo_4.destroy();
+                    exports.completeLevel = true;
                     _this.scene.stop("levelManBall");
                     _this.scene.start("finaleLevelManBall");
                 });
