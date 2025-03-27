@@ -19,9 +19,12 @@ exports.completeLevel = false;
 var levelManBall = /** @class */ (function (_super) {
     __extends(levelManBall, _super);
     function levelManBall() {
-        return _super.call(this, {
+        var _this = _super.call(this, {
             key: "levelManBall"
         }) || this;
+        _this.gamepad = null;
+        _this.isUsingGamepad = false;
+        return _this;
     }
     levelManBall.prototype.preload = function () {
         this.load.spritesheet("pallapiccola", "assets/images/pallapiccola.png", { frameWidth: 30, frameHeight: 30 });
@@ -39,6 +42,7 @@ var levelManBall = /** @class */ (function (_super) {
         this.load.video('portabia', 'assets/images/portabia.mp4');
         this.load.video('portale', 'assets/images/portale.mp4');
         this.load.video('portave', 'assets/images/portave.mp4');
+        this.load.image('black', 'assets/images/black.png');
         this.physics.world.createDebugGraphic();
     };
     levelManBall.prototype.create = function () {
@@ -54,9 +58,11 @@ var levelManBall = /** @class */ (function (_super) {
         else {
             console.error("Layer 'world' non trovato!");
         }
+        this.blackScreen = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'black');
+        this.blackScreen.setDepth(5).setDisplaySize(this.cameras.main.width, this.cameras.main.height).setVisible(false);
         // Crea gli oggetti di collisione dalla mappa
-        var collisionLayer = this.map.getObjectLayer('collisions');
-        collisionLayer.objects.forEach(function (object) {
+        this.collisionLayer = this.map.getObjectLayer('collisions');
+        this.collisionLayer.objects.forEach(function (object) {
             if (object.rectangle) {
                 var collisionObject = _this.physics.add.sprite(object.x + object.width / 2, object.y + object.height / 2, null).setOrigin(0.5, 0.5);
                 collisionObject.body.setSize(object.width, object.height);
@@ -203,17 +209,42 @@ var levelManBall = /** @class */ (function (_super) {
         });
     };
     levelManBall.prototype.update = function (time, delta) {
-        this.pallaPiccola.update();
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var _this = this;
+        //BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG
+        if (this.input.gamepad) {
+            this.input.gamepad.once('connected', function (pad) {
+                _this.gamepad = pad;
+                _this.isUsingGamepad = true;
+                console.log('Gamepad connected:', pad.id);
+            });
+            this.input.gamepad.once('disconnected', function (pad) {
+                _this.gamepad = null;
+                _this.isUsingGamepad = false;
+                console.log('Gamepad disconnected:', pad.id);
+            });
+        }
+        if (this.gamepad && (Math.abs(this.gamepad.leftStick.x) > 0.1 || Math.abs(this.gamepad.leftStick.y) > 0.1)) {
+            var _a = this.gamepad.leftStick, x = _a.x, y = _a.y;
+            if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
+                this.pallaPiccola.setVelocity(x * 200, y * 200);
+            }
+            else {
+                this.pallaPiccola.setVelocity(0, 0);
+            }
+        }
+        else {
+            this.pallaPiccola.update();
+        }
+        var interactKey = this.input.keyboard.addKey('E');
+        var isGamepadInteractPressed = this.gamepad && this.gamepad.buttons[0].pressed; // Tasto A del gamepad
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         var distance = Phaser.Math.Distance.Between(this.pallaPiccola.x, this.pallaPiccola.y, this.centerHitbox.x, this.centerHitbox.y);
         if (distance < 50) {
             this.interagisciBox.setVisible(true);
             this.interagisciText.setVisible(true);
             this.interagisciBox.setDepth(2);
             this.interagisciText.setDepth(2);
-            if (this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) {
+            if (this.input.keyboard.checkDown(interactKey, 500) || isGamepadInteractPressed) {
                 this.interagisciBox.setVisible(false);
                 this.interagisciText.setVisible(false);
                 var doorVideo_1 = this.add.video(this.cameras.main.centerX + 50, this.cameras.main.centerY + 50, 'portale');
@@ -221,7 +252,6 @@ var levelManBall = /** @class */ (function (_super) {
                 doorVideo_1.setScale(this.cameras.main.zoom);
                 doorVideo_1.play(true);
                 this.sound.play('urlo1');
-                // Rimuovi il video dopo che è terminato
                 this.time.delayedCall(5000, function () {
                     doorVideo_1.destroy();
                 });
@@ -249,7 +279,7 @@ var levelManBall = /** @class */ (function (_super) {
             this.interagisciText1.setVisible(true);
             this.interagisciBox1.setDepth(2);
             this.interagisciText1.setDepth(2);
-            if (this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) {
+            if (this.input.keyboard.checkDown(interactKey, 500) || isGamepadInteractPressed && this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) {
                 this.interagisciBox1.setVisible(false);
                 this.interagisciText1.setVisible(false);
                 var doorVideo_2 = this.add.video(this.cameras.main.centerX + 50, this.cameras.main.centerY + 50, 'portabia');
@@ -286,7 +316,7 @@ var levelManBall = /** @class */ (function (_super) {
             this.interagisciText2.setVisible(true);
             this.interagisciBox2.setDepth(2);
             this.interagisciText2.setDepth(2);
-            if (this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) {
+            if (this.input.keyboard.checkDown(interactKey, 500) || isGamepadInteractPressed && this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) {
                 this.interagisciBox2.setVisible(false);
                 this.interagisciText2.setVisible(false);
                 var doorVideo_3 = this.add.video(this.cameras.main.centerX + 50, this.cameras.main.centerY + 50, 'portave');
@@ -317,13 +347,12 @@ var levelManBall = /** @class */ (function (_super) {
             this.interagisciText2.setVisible(false);
         }
         var distance3 = Phaser.Math.Distance.Between(this.pallaPiccola.x, this.pallaPiccola.y, this.centerHitbox3.x, this.centerHitbox3.y);
-        console.log(distance3);
         if (distance3 < 60) {
             this.interagisciBox4.setVisible(true);
             this.interagisciText4.setVisible(true);
             this.interagisciBox4.setDepth(2);
             this.interagisciText4.setDepth(2);
-            if (this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) {
+            if (this.input.keyboard.checkDown(interactKey, 500) || isGamepadInteractPressed && this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) {
                 this.interagisciBox4.setVisible(false);
                 this.interagisciText4.setVisible(false);
                 var doorVideo_4 = this.add.video(this.cameras.main.centerX + 50, this.cameras.main.centerY + 50, 'portabia');
@@ -334,31 +363,16 @@ var levelManBall = /** @class */ (function (_super) {
                 // Rimuovi il video dopo che è terminato
                 this.time.delayedCall(5000, function () {
                     doorVideo_4.destroy();
+                    _this.scene.stop("levelManBall");
+                    _this.scene.start("finaleLevelManBall");
                 });
-                // Controlla lo stato di visibilità delle immagini
-                if (this.image1.visible && this.image2.visible && this.image3.visible) {
-                    this.image1.setVisible(false);
-                }
-                else if (!this.image1.visible && this.image2.visible && this.image3.visible) {
-                    this.image2.setVisible(false);
-                }
-                else if (!this.image1.visible && !this.image2.visible && this.image3.visible) {
-                    this.image3.setVisible(false);
-                    console.log('game over');
-                    this.scene.stop('level-1');
-                    this.scene.start('GamePlay');
-                }
             }
         }
         else {
             this.interagisciBox4.setVisible(false);
             this.interagisciText4.setVisible(false);
         }
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
-    // Funzione per teletrasportare il personaggio
     levelManBall.prototype.teleportPlayer = function () {
         this.pallaPiccola.setPosition(1000, 1050); // Cambia la posizione del personaggio
     };

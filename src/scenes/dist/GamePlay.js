@@ -75,22 +75,6 @@ var GamePlay = /** @class */ (function (_super) {
         this.player.setCollideWorldBounds(true);
         this.cameras.main.setScroll(mapWidth / 2 - this.cameras.main.width / 2, mapHeight / 2 - this.cameras.main.height / 2);
         this.cameras.main.setZoom(1);
-        if (this.input.gamepad) {
-            this.input.gamepad.once('connected', function (pad) {
-                _this.gamepad = pad;
-                if (_this.player instanceof movingPad_1["default"]) {
-                    _this.player.setGamepad(pad);
-                }
-                console.log('Gamepad connected:', pad.id);
-            });
-            this.input.gamepad.once('disconnected', function (pad) {
-                _this.gamepad = null;
-                console.log('Gamepad disconnected:', pad.id);
-            });
-        }
-        else {
-            console.error('Gamepad input system is not initialized properly.');
-        }
         this.centerHitbox = this.physics.add.sprite(573, 140, null).setOrigin(0.5, 0.5);
         this.centerHitbox.body.setSize(20, 80);
         this.centerHitbox.setImmovable(true);
@@ -336,35 +320,43 @@ var GamePlay = /** @class */ (function (_super) {
     };
     GamePlay.prototype.update = function (time, delta) {
         var _this = this;
-        if (this.gamepad) {
-            // Get the left stick values from the gamepad
+        if (this.input.gamepad) {
+            this.input.gamepad.once('connected', function (pad) {
+                _this.gamepad = pad;
+                if (_this.player instanceof movingPad_1["default"]) {
+                    _this.player.setGamepad(pad);
+                }
+                console.log('Gamepad connected:', pad.id);
+            });
+            this.input.gamepad.once('disconnected', function (pad) {
+                _this.gamepad = null;
+                console.log('Gamepad disconnected:', pad.id);
+            });
+        }
+        else {
+            console.error('Gamepad input system is not initialized properly.');
+        }
+        if (this.gamepad && (Math.abs(this.gamepad.leftStick.x) > 0.1 || Math.abs(this.gamepad.leftStick.y) > 0.1)) {
+            // Il controller è collegato e viene utilizzato
             var _a = this.gamepad.leftStick, x = _a.x, y = _a.y;
-            // Update player velocity
-            if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
-                this.player.setVelocityX(x * 200);
-                this.player.setVelocityY(y * 200);
-                // Determine the direction and play the appropriate animation
-                if (x > 0) {
-                    this.player.anims.play("player-running-destra", true); // Moving right
-                }
-                else if (x < 0) {
-                    this.player.anims.play("player-running-sinistra", true); // Moving left
-                }
-                else if (y > 0) {
-                    this.player.anims.play("player-running-sotto", true); // Moving down
-                }
-                else if (y < 0) {
-                    this.player.anims.play("player-running-sopra", true); // Moving up
-                }
+            this.player.setVelocityX(x * 200);
+            this.player.setVelocityY(y * 200);
+            // Determina la direzione e riproduce l'animazione appropriata
+            if (x > 0) {
+                this.player.anims.play("player-running-destra", true); // Movimento a destra
             }
-            else {
-                // If no movement, play idle animation
-                this.player.setVelocityX(0);
-                this.player.setVelocityY(0);
-                this.player.anims.play("player-idle", true);
+            else if (x < 0) {
+                this.player.anims.play("player-running-sinistra", true); // Movimento a sinistra
+            }
+            else if (y > 0) {
+                this.player.anims.play("player-running-sotto", true); // Movimento verso il basso
+            }
+            else if (y < 0) {
+                this.player.anims.play("player-running-sopra", true); // Movimento verso l'alto
             }
         }
         else {
+            // Usa i comandi da tastiera
             this.player.update();
         }
         if (this._voth == 0) {

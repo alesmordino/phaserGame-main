@@ -1,8 +1,11 @@
 import PallaPiccola from '../scenes/movingpalla';
+import movingpalla from '../scenes/movingpalla';
 export let completeLevel: boolean = false;
 
 export default class levelManBall extends Phaser.Scene {
   private pallaPiccola: PallaPiccola;
+  private gamepad: Phaser.Input.Gamepad.Gamepad | null = null;
+  private isUsingGamepad: boolean = false;
   private tileset: Phaser.Tilemaps.Tileset;
   private world: Phaser.Tilemaps.TilemapLayer;
   private map: Phaser.Tilemaps.Tilemap;
@@ -32,7 +35,8 @@ export default class levelManBall extends Phaser.Scene {
   private image1: Phaser.GameObjects.Image;
   private image2: Phaser.GameObjects.Image;
   private image3: Phaser.GameObjects.Image;
-
+  private blackScreen: Phaser.GameObjects.Image;
+  private collisionLayer: Phaser.Tilemaps.ObjectLayer
   constructor() {
     super({
       key: "levelManBall",
@@ -55,6 +59,7 @@ export default class levelManBall extends Phaser.Scene {
     this.load.video('portabia', 'assets/images/portabia.mp4');
     this.load.video('portale', 'assets/images/portale.mp4');
     this.load.video('portave', 'assets/images/portave.mp4');
+    this.load.image('black', 'assets/images/black.png');
     this.physics.world.createDebugGraphic();
   }
 
@@ -70,10 +75,12 @@ export default class levelManBall extends Phaser.Scene {
     } else {
       console.error("Layer 'world' non trovato!");
     }
+    this.blackScreen = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'black');
+    this.blackScreen.setDepth(5).setDisplaySize(this.cameras.main.width, this.cameras.main.height).setVisible(false);
 
     // Crea gli oggetti di collisione dalla mappa
-    const collisionLayer = this.map.getObjectLayer('collisions');
-    collisionLayer.objects.forEach((object) => {
+    this.collisionLayer = this.map.getObjectLayer('collisions');
+    this.collisionLayer.objects.forEach((object) => {
       if (object.rectangle) {
         const collisionObject = this.physics.add.sprite(object.x + object.width / 2, object.y + object.height / 2, null).setOrigin(0.5, 0.5);
         collisionObject.body.setSize(object.width, object.height);
@@ -248,22 +255,49 @@ export default class levelManBall extends Phaser.Scene {
       this.scene.get('GamePlay');
       this.scene.start('GamePlay');
     });
+
+    
   }
 
   update(time: number, delta: number): void {
-    this.pallaPiccola.update();
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG
+    if (this.input.gamepad) {
+      this.input.gamepad.once('connected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+        this.gamepad = pad;
+        this.isUsingGamepad = true;
+        console.log('Gamepad connected:', pad.id);
+      });
 
-   const distance = Phaser.Math.Distance.Between(this.pallaPiccola.x, this.pallaPiccola.y, this.centerHitbox.x, this.centerHitbox.y);
+      this.input.gamepad.once('disconnected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+        this.gamepad = null;
+        this.isUsingGamepad = false;
+        console.log('Gamepad disconnected:', pad.id);
+      });
+    }
+    if (this.gamepad && (Math.abs(this.gamepad.leftStick.x) > 0.1 || Math.abs(this.gamepad.leftStick.y) > 0.1)) {
+      const { x, y } = this.gamepad.leftStick;
+
+      if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
+        this.pallaPiccola.setVelocity(x * 200, y * 200);
+      } else {
+        this.pallaPiccola.setVelocity(0, 0);
+      }
+    } else {
+      this.pallaPiccola.update();
+    }
+    
+    const interactKey = this.input.keyboard.addKey('E');
+    const isGamepadInteractPressed = this.gamepad && this.gamepad.buttons[0].pressed; // Tasto A del gamepad
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  
+    const distance = Phaser.Math.Distance.Between(this.pallaPiccola.x, this.pallaPiccola.y, this.centerHitbox.x, this.centerHitbox.y);
     if (distance < 50) {
       this.interagisciBox.setVisible(true);
       this.interagisciText.setVisible(true);
       this.interagisciBox.setDepth(2);
       this.interagisciText.setDepth(2);
-      if(this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) 
-      {
+      if (this.input.keyboard.checkDown(interactKey, 500) || isGamepadInteractPressed) {
         this.interagisciBox.setVisible(false);
         this.interagisciText.setVisible(false);
         const doorVideo = this.add.video(this.cameras.main.centerX + 50, this.cameras.main.centerY + 50, 'portale');
@@ -271,11 +305,11 @@ export default class levelManBall extends Phaser.Scene {
         doorVideo.setScale(this.cameras.main.zoom);
         doorVideo.play(true);
         this.sound.play('urlo1');
-        // Rimuovi il video dopo che è terminato
         this.time.delayedCall(5000, () => {
-          doorVideo.destroy();
+          doorVideo.destroy();  
         });
-        if (this.image1.visible && this.image2.visible && this.image3.visible) {
+
+      if (this.image1.visible && this.image2.visible && this.image3.visible) {
           this.image1.setVisible(false);
         } else if (!this.image1.visible && this.image2.visible && this.image3.visible) {
           this.image2.setVisible(false);
@@ -290,14 +324,14 @@ export default class levelManBall extends Phaser.Scene {
       this.interagisciBox.setVisible(false);
       this.interagisciText.setVisible(false);
     }
-
+  
     const distance1 = Phaser.Math.Distance.Between(this.pallaPiccola.x, this.pallaPiccola.y, this.centerHitbox1.x, this.centerHitbox1.y);
     if (distance1 < 50) {
       this.interagisciBox1.setVisible(true);
       this.interagisciText1.setVisible(true);
       this.interagisciBox1.setDepth(2);
       this.interagisciText1.setDepth(2);
-      if(this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) 
+      if(this.input.keyboard.checkDown(interactKey, 500) || isGamepadInteractPressed && this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) 
       {
         this.interagisciBox1.setVisible(false);
         this.interagisciText1.setVisible(false);
@@ -326,14 +360,14 @@ export default class levelManBall extends Phaser.Scene {
       this.interagisciBox1.setVisible(false);
       this.interagisciText1.setVisible(false);
     }
-
+  
     const distance2 = Phaser.Math.Distance.Between(this.pallaPiccola.x, this.pallaPiccola.y, this.centerHitbox2.x, this.centerHitbox2.y);
     if (distance2 < 50) {
       this.interagisciBox2.setVisible(true);
       this.interagisciText2.setVisible(true);
       this.interagisciBox2.setDepth(2);
       this.interagisciText2.setDepth(2);
-      if(this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) 
+      if(this.input.keyboard.checkDown(interactKey, 500) || isGamepadInteractPressed && this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) 
       {
         this.interagisciBox2.setVisible(false);
         this.interagisciText2.setVisible(false);
@@ -346,7 +380,7 @@ export default class levelManBall extends Phaser.Scene {
         this.time.delayedCall(5000, () => {
           doorVideo.destroy();
         });
-
+  
         if (this.image1.visible && this.image2.visible && this.image3.visible) {
           this.image1.setVisible(false);
         } else if (!this.image1.visible && this.image2.visible && this.image3.visible) {
@@ -363,13 +397,12 @@ export default class levelManBall extends Phaser.Scene {
       this.interagisciText2.setVisible(false);
     }
     const distance3 = Phaser.Math.Distance.Between(this.pallaPiccola.x, this.pallaPiccola.y, this.centerHitbox3.x, this.centerHitbox3.y);
-    console.log(distance3);
     if (distance3 < 60) {
       this.interagisciBox4.setVisible(true);
       this.interagisciText4.setVisible(true);
       this.interagisciBox4.setDepth(2);
       this.interagisciText4.setDepth(2);
-      if(this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) 
+      if(this.input.keyboard.checkDown(interactKey, 500) || isGamepadInteractPressed && this.input.keyboard.checkDown(this.input.keyboard.addKey('E'), 500)) 
       {
         this.interagisciBox4.setVisible(false);
         this.interagisciText4.setVisible(false);
@@ -381,30 +414,17 @@ export default class levelManBall extends Phaser.Scene {
         // Rimuovi il video dopo che è terminato
         this.time.delayedCall(5000, () => {
           doorVideo.destroy();
+          this.scene.stop("levelManBall");
+          this.scene.start("finaleLevelManBall");
         });
-        // Controlla lo stato di visibilità delle immagini
-        if (this.image1.visible && this.image2.visible && this.image3.visible) {
-          this.image1.setVisible(false);
-        } else if (!this.image1.visible && this.image2.visible && this.image3.visible) {
-          this.image2.setVisible(false);
-        } else if (!this.image1.visible && !this.image2.visible && this.image3.visible) {
-          this.image3.setVisible(false);
-          console.log('game over');
-          this.scene.stop('level-1');
-          this.scene.start('GamePlay');
-        }
       }
     } else {
       this.interagisciBox4.setVisible(false);
       this.interagisciText4.setVisible(false);
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   }
 
-  // Funzione per teletrasportare il personaggio
+
   private teleportPlayer(): void {
     this.pallaPiccola.setPosition(1000, 1050); // Cambia la posizione del personaggio
   }

@@ -33,6 +33,7 @@ window.addEventListener("load", function () {
             levelManBall_1["default"],
             casino_1["default"],
             arcade_1["default"],
+            finaleLevelManBall,
         ],
         physics: {
             "default": "arcade",

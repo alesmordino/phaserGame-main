@@ -36,6 +36,7 @@ window.addEventListener("load", () => {
       levelManBall,
       casino,
       arcade,
+      finaleLevelManBall,
     ],
     physics: {
       default: "arcade",  // Sistema di fisica
