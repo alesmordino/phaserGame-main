@@ -202,11 +202,6 @@ var levelManBall = /** @class */ (function (_super) {
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        this.input.keyboard.on('keydown-J', function () {
-            _this.scene.stop('level-1');
-            _this.scene.get('GamePlay');
-            _this.scene.start('GamePlay');
-        });
     };
     levelManBall.prototype.update = function (time, delta) {
         var _this = this;
@@ -264,7 +259,7 @@ var levelManBall = /** @class */ (function (_super) {
                 else if (!this.image1.visible && !this.image2.visible && this.image3.visible) {
                     this.image3.setVisible(false);
                     console.log('game over');
-                    this.scene.stop('level-1');
+                    this.scene.stop('levelManBall');
                     this.scene.start('GamePlay');
                 }
             }
@@ -301,7 +296,7 @@ var levelManBall = /** @class */ (function (_super) {
                 else if (!this.image1.visible && !this.image2.visible && this.image3.visible) {
                     this.image3.setVisible(false);
                     console.log('game over');
-                    this.scene.stop('level-1');
+                    this.scene.stop('levelManBall');
                     this.scene.start('GamePlay');
                 }
             }
@@ -337,7 +332,7 @@ var levelManBall = /** @class */ (function (_super) {
                 else if (!this.image1.visible && !this.image2.visible && this.image3.visible) {
                     this.image3.setVisible(false);
                     console.log('game over');
-                    this.scene.stop('level-1');
+                    this.scene.stop('levelManBall');
                     this.scene.start('GamePlay');
                 }
             }

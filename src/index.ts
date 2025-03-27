@@ -8,6 +8,7 @@ import { GameData } from "./GameData";
 import levelManBall from "./scenes/levelManBall";
 import casino from "./scenes/casino";
 import arcade from "./scenes/arcade";
+import finaleLevelManBall from "./scenes/finaleLevelManBall";
 
 //il listener per l'evento load della pagina
 //questo evento viene lanciato quando la pagina è stata caricata

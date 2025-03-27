@@ -10,6 +10,7 @@ var GameData_1 = require("./GameData");
 var levelManBall_1 = require("./scenes/levelManBall");
 var casino_1 = require("./scenes/casino");
 var arcade_1 = require("./scenes/arcade");
+var finaleLevelManBall_1 = require("./scenes/finaleLevelManBall");
 //il listener per l'evento load della pagina
 //questo evento viene lanciato quando la pagina è stata caricata
 //e tutti gli elementi della pagina sono disponibili
@@ -33,7 +34,7 @@ window.addEventListener("load", function () {
             levelManBall_1["default"],
             casino_1["default"],
             arcade_1["default"],
-            finaleLevelManBall,
+            finaleLevelManBall_1["default"],
         ],
         physics: {
             "default": "arcade",

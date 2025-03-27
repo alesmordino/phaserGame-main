@@ -250,13 +250,6 @@ export default class levelManBall extends Phaser.Scene {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    this.input.keyboard.on('keydown-J', () => {
-      this.scene.stop('level-1');
-      this.scene.get('GamePlay');
-      this.scene.start('GamePlay');
-    });
-
-    
   }
 
   update(time: number, delta: number): void {
@@ -316,7 +309,7 @@ export default class levelManBall extends Phaser.Scene {
         } else if (!this.image1.visible && !this.image2.visible && this.image3.visible) {
           this.image3.setVisible(false);
           console.log('game over');
-          this.scene.stop('level-1');
+          this.scene.stop('levelManBall');
           this.scene.start('GamePlay');
         }
       }
@@ -352,7 +345,7 @@ export default class levelManBall extends Phaser.Scene {
         } else if (!this.image1.visible && !this.image2.visible && this.image3.visible) {
           this.image3.setVisible(false);
           console.log('game over');
-          this.scene.stop('level-1');
+          this.scene.stop('levelManBall');
           this.scene.start('GamePlay');
         }
       }
@@ -388,7 +381,7 @@ export default class levelManBall extends Phaser.Scene {
         } else if (!this.image1.visible && !this.image2.visible && this.image3.visible) {
           this.image3.setVisible(false);
           console.log('game over');
-          this.scene.stop('level-1');
+          this.scene.stop('levelManBall');
           this.scene.start('GamePlay');
         }
       }
