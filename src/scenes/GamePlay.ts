@@ -256,7 +256,7 @@ export default class GamePlay extends Phaser.Scene {
     this.physics.add.collider(this.player, this.centerHitbox10, () => {
       this.lastPosition = { x: this.player.x, y: this.player.y };
       this.scene.stop("GamePlay");
-      this.scene.start("levelManBall");
+      this.scene.start("finaleLevelManBall");
     });
 
 

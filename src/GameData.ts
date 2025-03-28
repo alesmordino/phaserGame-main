@@ -2,7 +2,7 @@ export let GameData: gameData = {
   globals: {
     gameWidth: 1024,
     gameHeight: 1024,
-    bgColor: "#ffffff",
+    bgColor: "#000000",
     debug: false
   },
 

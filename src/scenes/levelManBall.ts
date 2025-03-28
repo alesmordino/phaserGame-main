@@ -37,6 +37,7 @@ export default class levelManBall extends Phaser.Scene {
   private blackScreen: Phaser.GameObjects.Image;
   private collisionLayer: Phaser.Tilemaps.ObjectLayer
   private suggeritore: Phaser.GameObjects.Image;
+  
   constructor() {
     super({
       key: "levelManBall",
@@ -305,13 +306,16 @@ export default class levelManBall extends Phaser.Scene {
       this.interagisciText.setVisible(true);
       this.interagisciBox.setDepth(2);
       this.interagisciText.setDepth(2);
+    
       if (this.input.keyboard.checkDown(interactKey, 500) || isGamepadInteractPressed) {
+
         this.interagisciBox.setVisible(false);
         this.interagisciText.setVisible(false);
         const doorVideo = this.add.video(this.cameras.main.centerX + 50, this.cameras.main.centerY + 50, 'portale');
         doorVideo.setDepth(4);
         doorVideo.setScale(this.cameras.main.zoom);
         doorVideo.play(true);
+        
         this.sound.play('urlo1');
         this.time.delayedCall(5000, () => {
           doorVideo.destroy();  
