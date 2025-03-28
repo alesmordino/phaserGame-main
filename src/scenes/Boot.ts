@@ -49,11 +49,6 @@ export default class Boot extends Phaser.Scene {
     this.music.play();
 
     // Initialize credit button and back button
-    const creditiButton = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 90, 'crediti')
-      .setInteractive()
-      .setScale(0.5)
-      .setDepth(5);
-
     this.creditiImage = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'credititesti')
       .setVisible(false)
       .setDepth(5);
@@ -63,11 +58,6 @@ export default class Boot extends Phaser.Scene {
       .setScale(0.5)
       .setVisible(false)
       .setDepth(5);
-
-    creditiButton.on('pointerdown', () => {
-      this.creditiImage.setVisible(true);
-      this.backButton.setVisible(true);
-    });
 
     // Hide crediti image when back button is clicked
     this.backButton.on('pointerdown', () => {
@@ -197,8 +187,8 @@ export default class Boot extends Phaser.Scene {
         });
       });
 
-      // Add autoplay.png in the bottom-right corner
-      const autoplayButton = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 90, 'autoplay')
+      // Add autoplay.png in the bottom-left corner
+      const autoplayButton = this.add.image(50, this.cameras.main.height - 50, 'autoplay')
         .setInteractive()
         .setScale(0.5)
         .setDepth(5);
@@ -206,9 +196,9 @@ export default class Boot extends Phaser.Scene {
       autoplayButton.on('pointerdown', () => {
         autoplayButton.setVisible(false); // Hide autoplay button
 
-        // Display mappatura controller.png
-        const controllerImage = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'mappatura controller')
-          .setScale(0.8)
+        // Display mappatura controller.png in the bottom-left corner
+        const controllerImage = this.add.image(100, this.cameras.main.height - 90, 'mappatura controller')
+          .setScale(0.5)
           .setDepth(5);
 
         // Add back.png in the bottom-right corner
@@ -222,6 +212,18 @@ export default class Boot extends Phaser.Scene {
           backButton.setVisible(false); // Hide back button
           autoplayButton.setVisible(true); // Show autoplay button again
         });
+      });
+
+      // Add crediti.png in the bottom-right corner after playBG
+      const creditiButton = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 90, 'crediti')
+        .setInteractive()
+        .setScale(0.5)
+        .setDepth(5)
+        .setVisible(true);
+
+      creditiButton.on('pointerdown', () => {
+        this.creditiImage.setVisible(true);
+        this.backButton.setVisible(true);
       });
 
       this.startPlaneAnimations();
