@@ -1,17 +1,7 @@
 import Phaser from "phaser";
-import { setupCamera, startFaceMesh } from "./FaceTracking";
 import { GameData } from "../GameData";
-export let emozioneBoot: string = "neutro";
-
-declare global {
-  interface Window {
-    mostFrequentEmotion: string;
-    currentEmotion: string;
-  }
-}
 
 export default class Boot extends Phaser.Scene {
-  private lastEmotion: string = "neutro";
   private _logo: Phaser.GameObjects.Sprite;
   private bg: Phaser.GameObjects.Sprite;
   private logo: Phaser.GameObjects.Image;
@@ -172,10 +162,6 @@ export default class Boot extends Phaser.Scene {
             });
         });
     });
-
-    setupCamera().then(() => {
-        startFaceMesh();
-      });
   }
 
   startPlaneAnimations(): void {
@@ -216,14 +202,5 @@ export default class Boot extends Phaser.Scene {
   }
 
   update(): void {
-    if (window.currentEmotion && window.currentEmotion !== this.lastEmotion) {
-      this.lastEmotion = window.currentEmotion;
-      console.log("Emozione aggiornata:", this.lastEmotion);
-    }
-
-    if (window.mostFrequentEmotion && window.mostFrequentEmotion !== emozioneBoot) {
-      emozioneBoot = window.mostFrequentEmotion;
-      console.log("Emozione più rilevata:", emozioneBoot);
-    }
   }
 }

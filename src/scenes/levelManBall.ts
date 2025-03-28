@@ -1,5 +1,4 @@
 import PallaPiccola from '../scenes/movingpalla';
-import movingpalla from '../scenes/movingpalla';
 export let completeLevel: boolean = false;
 
 export default class levelManBall extends Phaser.Scene {
