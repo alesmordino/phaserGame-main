@@ -17,7 +17,7 @@ export default class Boot extends Phaser.Scene {
   private creditiImage: Phaser.GameObjects.Image;
   private backButton: Phaser.GameObjects.Image;
   private animationsPlayed: boolean = false;
-
+  private gamepad: Phaser.Input.Gamepad.Gamepad | null = null;
   constructor() {
     super({ key: "Boot" });
   }
@@ -111,6 +111,14 @@ export default class Boot extends Phaser.Scene {
         });
       });
     });
+    this.input.gamepad?.on('connected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+      this.gamepad = pad;
+      console.log('Gamepad connesso:', pad.id);
+      // Inizializza la proprietà justDown per ogni pulsante
+      pad.buttons.forEach(button => {
+          (button as any).justDown = false;
+      });
+  });
   }
 
   private startPlayBG(): void {
@@ -285,5 +293,19 @@ export default class Boot extends Phaser.Scene {
     });
   }
 
-  update(): void {}
+  update(): void {
+    const pad = this.input.gamepad?.getPad(0);
+        
+    if (pad) {
+        // Pulsante A (indice 0 nella maggior parte dei gamepad)
+        if (pad.buttons[0].value === 1 && !(pad.buttons[0] as any).justDown) {
+            (pad.buttons[0] as any).justDown = true;
+            if (this.animationsPlayed) {
+                this.scene.start('GamePlay');
+            }
+        } else if (pad.buttons[0].value === 0) {
+            (pad.buttons[0] as any).justDown = false;
+        }
+    }
+  }
 }

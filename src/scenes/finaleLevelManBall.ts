@@ -45,6 +45,8 @@ export default class finaleLevelManBall extends Phaser.Scene {
 
     this.portarossa = this.physics.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, 'portarossa');
     this.portarossa.setImmovable(true);
+    this.portarossa.body.setSize(100, 100); // Hitbox della porta
+    this.portarossa.setDebug(true, true, 0x00ff00);
 
     this.centerHitbox = this.physics.add.sprite(335,40, null).setOrigin(0.5, 0.5);
     this.centerHitbox.body.setSize(50, 50); 
@@ -145,6 +147,7 @@ export default class finaleLevelManBall extends Phaser.Scene {
       } else {
           this.player = new playerr(this, this.walkFrame.x, this.walkFrame.y); // Use playerr for keyboard
       }
+      this.physics.add.collider(this.walkFrame, this.hitbox);
     }
 
   }
