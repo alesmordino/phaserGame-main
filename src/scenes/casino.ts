@@ -67,7 +67,7 @@ export default class Casino extends Phaser.Scene
   create() 
   {
     this.music = this.sound.add('colonna', { loop: true });
-    this.music.play;
+    this.music.play();
     this.carteDisponibili = [this.carte[0], this.carte[1], this.carte[2], this.carte[3], this.carte[4], this.carte[5]]; // Inizializza le carte disponibili per l'IA
     // Crea la mappa
     this.map = this.make.tilemap({ key: "casino1" });

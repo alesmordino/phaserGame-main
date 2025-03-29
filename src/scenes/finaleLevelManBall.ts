@@ -102,6 +102,7 @@ export default class finaleLevelManBall extends Phaser.Scene {
     this.physics.add.collider(this.pallaPiccola, this.portarossa);
     this.input.keyboard.on('keydown-P', () => {
       this.scene.stop('finaleLevelManBall');
+      this.music.stop();
       this.scene.start('GamePlay');
     });
 
