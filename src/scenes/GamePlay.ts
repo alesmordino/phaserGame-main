@@ -35,6 +35,9 @@ export default class GamePlay extends Phaser.Scene {
   private plane: Phaser.GameObjects.Image;
   private suggeritore: Phaser.GameObjects.Image;
   private lastPosition: { x: number, y: number } = { x: 470, y: 930 };
+  private frase1Generale: Phaser.GameObjects.Image;
+  private frase2Generale: Phaser.GameObjects.Image;
+  private frase3Generale: Phaser.GameObjects.Image;
 
   constructor() {
     super({
@@ -61,11 +64,33 @@ export default class GamePlay extends Phaser.Scene {
     this.load.image('fish', 'assets/images/fish.png');
     this.load.image('plane', 'assets/images/plane.png');
     this.load.image('suggeritore', 'assets/images/suggeritore.png');
+    this.load.image('frase1Generale', 'assets/images/frase1Generale.png')
+    this.load.image('frase2Generale', 'assets/images/frase2Generale.png')
+    this.load.image('frase3Generale', 'assets/images/frase3Generale.png')
 
     this.physics.world.createDebugGraphic();
   }
 
   create() {
+    this.frase1Generale = this.add.image(this.cameras.main.width - 250, 60, 'frase1Generale').setVisible(true).setDepth(4);
+    this.frase2Generale = this.add.image(this.cameras.main.width - 200, 60, 'frase2Generale').setVisible(false).setDepth(4);
+    this.frase3Generale = this.add.image(this.cameras.main.width - 230, 60, 'frase3Generale').setVisible(false).setDepth(4);
+    this.time.addEvent({
+      delay: 7000,
+      callback: () => {
+        this.frase1Generale.setVisible(false);
+        this.frase2Generale.setVisible(true);
+        this.time.addEvent({
+          delay: 7000,
+          callback: () => {
+            this.frase2Generale.setVisible(false);
+            this.frase3Generale.setVisible(true);
+          },
+          loop: true
+        });
+      },
+      loop: true
+    });
     this.player = new playerr(this, this.lastPosition.x, this.lastPosition.y);
     this.map = this.make.tilemap({ key: "level-1" });
     this.tileset = this.map.addTilesetImage("tilemap-extruded");

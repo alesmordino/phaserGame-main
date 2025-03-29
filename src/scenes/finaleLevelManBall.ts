@@ -17,6 +17,8 @@ export default class finaleLevelManBall extends Phaser.Scene {
   private bool: boolean = false;
   private portarossa: Phaser.Physics.Arcade.Sprite;
   private centerHitbox: Phaser.Physics.Arcade.Sprite;
+  private doorCollider: Phaser.Physics.Arcade.Collider | null = null; // Added for door collider management
+
   constructor() {
     super({ key: "finaleLevelManBall" });
   }
@@ -28,7 +30,6 @@ export default class finaleLevelManBall extends Phaser.Scene {
     this.load.spritesheet('walk', 'assets/images/walk.png', { frameWidth: 64, frameHeight: 64 });
     this.load.image('portarossa', 'assets/images/porta_rossa.png')
     this.physics.world.createDebugGraphic();
-
   }
 
   create(): void {
@@ -42,7 +43,7 @@ export default class finaleLevelManBall extends Phaser.Scene {
     this.physics.add.collider(this.pallaPiccola, this.hitbox, this.handleCollision, undefined, this);
     this.physics.add.collider(this.pallaGrande, this.hitbox, this.handleCollision, undefined, this);
 
-
+    // Create the red door
     this.portarossa = this.physics.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, 'portarossa');
     this.portarossa.setImmovable(true);
     this.portarossa.body.setSize(100, 100); // Hitbox della porta
@@ -55,31 +56,31 @@ export default class finaleLevelManBall extends Phaser.Scene {
     this.centerHitbox.setDebug(true, true, 0xff0000);
 
     if(this.bool == false){
-    this.time.addEvent({
-      delay: 3500,
-      callback: () => {
-          if (this.bool) return; // Prevent further alternation if bool is true
+      this.time.addEvent({
+        delay: 3500,
+        callback: () => {
+            if (this.bool) return; // Prevent further alternation if bool is true
 
-          if (this.isPallaPiccolaActive) {
-              if (this.pallaPiccola.body) {
-                  this.pallaPiccola.setVisible(false).body.enable = false;
-              }
-              if (this.pallaGrande.body) {
-                  this.pallaGrande.setVisible(true).body.enable = true;
-              }
-          } else {
-              if (this.pallaGrande.body) {
-                  this.pallaGrande.setVisible(false).body.enable = false;
-              }
-              if (this.pallaPiccola.body) {
-                  this.pallaPiccola.setVisible(true).body.enable = true;
-              }
-          }
-          this.isPallaPiccolaActive = !this.isPallaPiccolaActive; 
-      },
-      loop: true 
-    });
-  }
+            if (this.isPallaPiccolaActive) {
+                if (this.pallaPiccola.body) {
+                    this.pallaPiccola.setVisible(false).body.enable = false;
+                }
+                if (this.pallaGrande.body) {
+                    this.pallaGrande.setVisible(true).body.enable = true;
+                }
+            } else {
+                if (this.pallaGrande.body) {
+                    this.pallaGrande.setVisible(false).body.enable = false;
+                }
+                if (this.pallaPiccola.body) {
+                    this.pallaPiccola.setVisible(true).body.enable = true;
+                }
+            }
+            this.isPallaPiccolaActive = !this.isPallaPiccolaActive; 
+        },
+        loop: true 
+      });
+    }
 
     this.walkFrame = this.add.sprite(this.cameras.main.width / 2 + 100, this.cameras.main.height / 2, 'walk', 27);
     this.walkFrame.setScale(1).setDepth(1);
@@ -98,12 +99,12 @@ export default class finaleLevelManBall extends Phaser.Scene {
 
     // Initialize the player based on input type
     if(this.bool){
-    if (this.input.gamepad && this.input.gamepad.total > 0) {
-        this.player = new movingPad(this, this.walkFrame.x, this.walkFrame.y); // Use movingPad for gamepad
-    } else {
-        this.player = new playerr(this, this.walkFrame.x, this.cameras.main.height / 2); // Use playerr for keyboard
+      if (this.input.gamepad && this.input.gamepad.total > 0) {
+          this.player = new movingPad(this, this.walkFrame.x, this.walkFrame.y); // Use movingPad for gamepad
+      } else {
+          this.player = new playerr(this, this.walkFrame.x, this.cameras.main.height / 2); // Use playerr for keyboard
+      }
     }
-  }
   }
 
   handleCollision(): void {
@@ -147,9 +148,23 @@ export default class finaleLevelManBall extends Phaser.Scene {
       } else {
           this.player = new playerr(this, this.walkFrame.x, this.walkFrame.y); // Use playerr for keyboard
       }
-      this.physics.add.collider(this.walkFrame, this.hitbox);
-    }
 
+      // Add door collision only when player is active
+      this.doorCollider = this.physics.add.collider(
+        this.walkFrame, 
+        this.portarossa, 
+        this.handleDoorCollision, 
+        null, 
+        this
+      );
+    }
+  }
+
+  handleDoorCollision(): void {
+    // Add your door collision logic here
+    console.log("Player collided with the door!");
+    // Example: transition to another scene
+    // this.scene.start('NextScene');
   }
 
   update(): void {
