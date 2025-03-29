@@ -15,7 +15,7 @@ export default class finaleLevelManBall extends Phaser.Scene {
   private hitbox: Phaser.Physics.Arcade.Sprite;
   private collisionCount: number = 0;
   private bool: boolean = false;
-  private portarossa: Phaser.Physics.Arcade.Image;
+  private portarossa: Phaser.Physics.Arcade.Sprite;
   private centerHitbox: Phaser.Physics.Arcade.Sprite;
   constructor() {
     super({ key: "finaleLevelManBall" });
@@ -43,11 +43,11 @@ export default class finaleLevelManBall extends Phaser.Scene {
     this.physics.add.collider(this.pallaGrande, this.hitbox, this.handleCollision, undefined, this);
 
 
-    this.portarossa = this.physics.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'portarossa');
+    this.portarossa = this.physics.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, 'portarossa');
     this.portarossa.setImmovable(true);
 
     this.centerHitbox = this.physics.add.sprite(335,40, null).setOrigin(0.5, 0.5);
-    this.centerHitbox.body.setSize(100, 0); 
+    this.centerHitbox.body.setSize(50, 50); 
     this.centerHitbox.setImmovable(true);
     this.centerHitbox.setVisible(false); 
     this.centerHitbox.setDebug(true, true, 0xff0000);
@@ -85,14 +85,14 @@ export default class finaleLevelManBall extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
 
     this.hitbox = this.physics.add.sprite(this.cameras.main.width / 2 + 100, this.cameras.main.height / 2, null);
-    this.hitbox.body.setSize(30, 60); 
+    this.hitbox.body.setSize(50, 50); 
     this.hitbox.setImmovable(true);
     this.hitbox.setVisible(false); 
     this.hitbox.setDebug(true, true, 0xff0000);
 
     this.physics.add.collider(this.pallaPiccola, this.hitbox, this.handleCollision, undefined, this);
     this.physics.add.collider(this.pallaPiccola, this.centerHitbox);
-    this.physics.add.collider(this.pallaPiccola, this.centerHitbox);
+    this.physics.add.collider(this.pallaPiccola, this.portarossa);
 
     // Initialize the player based on input type
     if(this.bool){
