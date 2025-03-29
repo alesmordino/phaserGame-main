@@ -15,7 +15,7 @@ export default class arcade extends Phaser.Scene {
   private _voth = 0;
   private start: Phaser.GameObjects.Image;
   private frase: Phaser.GameObjects.Image;
-  private n: number = 0;
+  private clicked: boolean = false;
 
 
   constructor() {
@@ -76,13 +76,15 @@ export default class arcade extends Phaser.Scene {
 
     // Disabilita il movimento del player finché il livello non inizia
     this.player.setActive(false).setVisible(false);
-    if(this.n==0){
-      this.n++;
-      this.input.on("pointerdown", () => {
-        this.frase.destroy();
-        this.startLevel();
-      });
-    }
+    this.input.once("pointerdown", () => {
+      if (!this.clicked) {
+          this.clicked = true;
+          if (this.frase && this.frase.active) {
+              this.frase.destroy();
+          }
+          this.startLevel();
+      }
+  });
 
     this.physics.add.collider(this.player, this.collisionLayer);
 
@@ -188,7 +190,14 @@ export default class arcade extends Phaser.Scene {
 
             res.setVisible(true).setDepth(4);
             winText.setVisible(true).setDepth(4);
-
+            this.time.addEvent({
+              delay: 2000,
+              callback: () => {
+                this.scene.stop("arcade");
+                this.scene.start("GamePlay")
+              },
+              loop: true
+            });
             // Ferma il movimento del player
             this.player.setActive(false).setVisible(false);
             this.worldLayer.setDepth(0); // Nascondi il layer della mappa
