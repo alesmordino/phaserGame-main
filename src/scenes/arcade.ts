@@ -41,7 +41,7 @@ export default class arcade extends Phaser.Scene {
     this.load.image("pallinolev", "assets/images/pallino_leva.png");
     this.load.image("pallinosx", "assets/images/pallino_leva_sin.png");
     this.load.image("aereo8", "assets/images/verde_piccolo_destra.png");
-    this.load.image("scritta", "assets/images/IISFERMI.png");
+    this.load.image("scritta", "assets/images/cabina/IISFERMI.png");
     this.load.spritesheet("walk", "assets/images/walk.png");
     this.load.image("blackScreen", "assets/images/schermo-nero.png");
     this.load.image("plane", "assets/images/plane.png");
@@ -637,7 +637,7 @@ export default class arcade extends Phaser.Scene {
 
    const scritta = this.physics.add.image(200, 200, "scritta");
    scritta.setImmovable(true);
-   scritta.body.setSize(40, 40); 
+   scritta.body.setSize(475, 138); 
    scritta.setDepth(2);
    
    const aereoTween16 = this.tweens.add({
