@@ -15,6 +15,7 @@ export default class arcade extends Phaser.Scene {
   private _voth = 0;
   private start: Phaser.GameObjects.Image;
   private frase: Phaser.GameObjects.Image;
+  private n: number = 0;
 
 
   constructor() {
@@ -46,6 +47,7 @@ export default class arcade extends Phaser.Scene {
     this.load.image("plane", "assets/images/plane.png");
     this.load.image("suggeritore", "assets/images/suggeritore.png");
     this.load.image("frase", "assets/images/frase.png");
+
     this.physics.world.createDebugGraphic();
 
   }
@@ -74,11 +76,13 @@ export default class arcade extends Phaser.Scene {
 
     // Disabilita il movimento del player finché il livello non inizia
     this.player.setActive(false).setVisible(false);
-
-    this.input.on("pointerdown", () => {
-      this.frase.destroy();
-      this.startLevel();
-    });
+    if(this.n==0){
+      this.n++;
+      this.input.on("pointerdown", () => {
+        this.frase.destroy();
+        this.startLevel();
+      });
+    }
 
     this.physics.add.collider(this.player, this.collisionLayer);
 
@@ -181,7 +185,7 @@ export default class arcade extends Phaser.Scene {
                 fontStyle: "bold",
                 backgroundColor: "#000000", // Sfondo nero
             }).setDepth(3).setOrigin(0.5); // Centra il testo
-            
+
             res.setVisible(true).setDepth(4);
             winText.setVisible(true).setDepth(4);
 

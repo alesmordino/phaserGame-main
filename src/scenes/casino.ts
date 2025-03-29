@@ -25,7 +25,7 @@ export default class Casino extends Phaser.Scene
     this.load.tilemapTiledJSON("casino1", "assets/map/casino.json");
     this.load.image("casinoTileset", "assets/map/casino.png");
     this.load.image("coperta", "assets/images/coperta.png");
-    this.load.image("haivinto", "assets/images/haivinto.png");
+    this.load.image("haivinto", "assets/images/vinto.png");
     this.load.image("haiperso", "assets/images/haiperso.png");
     this.load.image("completo", "assets/images/completo.png");
     this.load.image("3", "assets/images/carta3.png");
@@ -86,7 +86,7 @@ export default class Casino extends Phaser.Scene
       },
     });
 
-    this.haivinto = this.add.image(400, 250, "haivinto").setDepth(6).setVisible(false);
+    this.haivinto = this.add.image(400, 380, "haivinto").setDepth(6).setVisible(false);
     this.completo = this.add.image(400, 250, "completo").setDepth(6).setVisible(false);
     this.haiperso = this.add.image(400, 250, "haiperso").setDepth(6).setVisible(false);
 
@@ -292,7 +292,6 @@ carteCliccabili.forEach(({ coperta }) => {
       this.time.delayedCall(7000, () => {
         this.cameras.main.setBackgroundColor("#000000"); // Imposta lo sfondo nero
         this.time.removeAllEvents(); // Rimuove tutti gli eventi temporizzati, incluso il cambio RGB
-        this.completo.setVisible(true).setDepth(6); // Mostra l'immagine "Complete"
         this.haivinto.setVisible(true).setDepth(6); // Mostra l'immagine "Hai vinto!"
 
         this.time.delayedCall(2000, () => {

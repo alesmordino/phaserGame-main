@@ -72,9 +72,9 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   create() {
-    this.frase1Generale = this.add.image(this.cameras.main.width - 250, 60, 'frase1Generale').setVisible(true).setDepth(4);
-    this.frase2Generale = this.add.image(this.cameras.main.width - 200, 60, 'frase2Generale').setVisible(false).setDepth(4);
-    this.frase3Generale = this.add.image(this.cameras.main.width - 230, 60, 'frase3Generale').setVisible(false).setDepth(4);
+    this.frase1Generale = this.add.image(this.cameras.main.width - 250, 65, 'frase1Generale').setVisible(true).setDepth(4);
+    this.frase2Generale = this.add.image(this.cameras.main.width - 200, 65, 'frase2Generale').setVisible(false).setDepth(4);
+    this.frase3Generale = this.add.image(this.cameras.main.width - 230, 65, 'frase3Generale').setVisible(false).setDepth(4);
     this.time.addEvent({
       delay: 7000,
       callback: () => {
