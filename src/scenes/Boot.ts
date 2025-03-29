@@ -46,8 +46,8 @@ export default class Boot extends Phaser.Scene {
 
   create(): void {
     // Initialize music
-    this.music = this.sound.add('colonna', { loop: true });
-    this.music.play();
+    //this.music = this.sound.add('colonna', { loop: true });
+    //this.music.play();
 
     // Initialize credit button and back button
     this.creditiImage = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'credititesti')
@@ -302,10 +302,11 @@ export default class Boot extends Phaser.Scene {
             (pad.buttons[0] as any).justDown = true;
             if (this.animationsPlayed) {
                 this.scene.start('GamePlay');
+                //this.music.stop();
             }
         } else if (pad.buttons[0].value === 0) {
             (pad.buttons[0] as any).justDown = false;
         }
     }
-  }
+}
 }

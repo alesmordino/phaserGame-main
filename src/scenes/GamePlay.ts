@@ -38,6 +38,7 @@ export default class GamePlay extends Phaser.Scene {
   private frase1Generale: Phaser.GameObjects.Image;
   private frase2Generale: Phaser.GameObjects.Image;
   private frase3Generale: Phaser.GameObjects.Image;
+  private music: Phaser.Sound.BaseSound;
 
   constructor() {
     super({
@@ -67,11 +68,15 @@ export default class GamePlay extends Phaser.Scene {
     this.load.image('frase1Generale', 'assets/images/frase1Generale.png')
     this.load.image('frase2Generale', 'assets/images/frase2Generale.png')
     this.load.image('frase3Generale', 'assets/images/frase3Generale.png')
+    this.load.audio('generale', 'assets/sounds/generale.mp3');
+
 
     this.physics.world.createDebugGraphic();
   }
 
   create() {
+    this.music = this.sound.add('generale', { loop: true });
+    this.music.play();
     this.frase1Generale = this.add.image(this.cameras.main.width - 250, 65, 'frase1Generale').setVisible(true).setDepth(4);
     this.frase2Generale = this.add.image(this.cameras.main.width - 200, 65, 'frase2Generale').setVisible(false).setDepth(4);
     this.frase3Generale = this.add.image(this.cameras.main.width - 230, 65, 'frase3Generale').setVisible(false).setDepth(4);
@@ -281,7 +286,8 @@ export default class GamePlay extends Phaser.Scene {
     this.physics.add.collider(this.player, this.centerHitbox10, () => {
       this.lastPosition = { x: this.player.x, y: this.player.y };
       this.scene.stop("GamePlay");
-      this.scene.start("finaleLevelManBall");
+      this.music.stop()
+      this.scene.start("levelManBall");
     });
 
 
@@ -307,6 +313,7 @@ export default class GamePlay extends Phaser.Scene {
     this.physics.add.collider(this.player, this.centerHitbox11, () => {
       this.lastPosition = { x: this.player.x, y: this.player.y };
       this.scene.stop("GamePlay");
+      this.music.stop()
       this.scene.start("arcade");
     });
 
@@ -332,6 +339,7 @@ export default class GamePlay extends Phaser.Scene {
     this.physics.add.collider(this.player, this.centerHitbox12, () => {
       this.lastPosition = { x: this.player.x, y: this.player.y };
       this.scene.stop("GamePlay");
+      this.music.stop()
       this.scene.start("SceltaIAScene");
     });
 

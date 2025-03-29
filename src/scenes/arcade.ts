@@ -5,6 +5,7 @@ import { IPlayer } from '../scenes/IPlayer';
 export let completeLevel2: Boolean = false;
 export default class arcade extends Phaser.Scene {
   private map!: Phaser.Tilemaps.Tilemap;
+  private music: Phaser.Sound.BaseSound;
   private tileset!: Phaser.Tilemaps.Tileset;
   private worldLayer!: Phaser.Tilemaps.TilemapLayer;
   private collisionLayer!: Phaser.Tilemaps.TilemapLayer;
@@ -16,7 +17,8 @@ export default class arcade extends Phaser.Scene {
   private start: Phaser.GameObjects.Image;
   private frase: Phaser.GameObjects.Image;
   private clicked: boolean = false;
-
+  private haivinto: Phaser.GameObjects.Image;
+  private black: Phaser.GameObjects.Image;
 
   constructor() {
     super("arcade");
@@ -24,6 +26,7 @@ export default class arcade extends Phaser.Scene {
 
   preload() {
     // Carica la mappa e il tileset
+    this.load.image("vinto", "assets/images/vinto.png");
     this.load.tilemapTiledJSON("arcadeMap", "assets/map/arcade.json"); // File JSON della mappa
     this.load.image("arcadeTileset", "assets/map/cabinato_comp.png"); // Immagine del tileset
     this.load.image("aereo", "assets/images/aereo_alladestra_rosso.png");
@@ -43,22 +46,25 @@ export default class arcade extends Phaser.Scene {
     this.load.image("aereo8", "assets/images/verde_piccolo_destra.png");
     this.load.image("scritta", "assets/images/cabina/IISFERMI.png");
     this.load.spritesheet("walk", "assets/images/walk.png");
-    this.load.image("blackScreen", "assets/images/schermo-nero.png");
+    this.load.image("blackScreen", "assets/images/black.png");
     this.load.image("plane", "assets/images/plane.png");
     this.load.image("suggeritore", "assets/images/suggeritore.png");
     this.load.image("frase", "assets/images/frase.png");
+    this.load.audio('colonna', 'assets/sounds/arcade.mp3');
 
     this.physics.world.createDebugGraphic();
 
   }
 
   create() {
+    this.music = this.sound.add('colonna', { loop: true });
+    this.music.play();
     // Crea la mappa
     this.start = this.add.image(this.cameras.main.width - 90, 60,"suggeritore").setDepth(7).setScale(0.25);
     this.frase = this.add.image(this.cameras.main.width - 250, 75, "frase").setDepth(7);
     this.map = this.make.tilemap({ key: "arcadeMap" });
     this.tileset = this.map.addTilesetImage("cabinato_comp", "arcadeTileset");
-
+    this.haivinto = this.add.sprite(this.cameras.main.width/2, this.cameras.main.height/2,"vinto" )
     this.worldLayer = this.map.createLayer("world", this.tileset, 0, 0);
     this.worldLayer.setDepth(1);
 
@@ -69,7 +75,7 @@ export default class arcade extends Phaser.Scene {
 
     // Aggiungi il player
     this.player = new playerr(this, 100, 100);
-    this.player.setVelocity(500);
+    this.player.setVelocity(600);
     this.player.setDepth(3);
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.cameras.main.setBackgroundColor(0x000000);
@@ -116,8 +122,8 @@ export default class arcade extends Phaser.Scene {
           // Il controller è collegato e viene utilizzato
           const { x, y } = this.gamepad.leftStick;
       
-          this.player.setVelocityX(x * 200);
-          this.player.setVelocityY(y * 200);
+          this.player.setVelocityX(x * 350);
+          this.player.setVelocityY(y * 350);
       
           // Determina la direzione e riproduce l'animazione appropriata
           if (x > 0) {
@@ -173,31 +179,14 @@ export default class arcade extends Phaser.Scene {
         }
 
         if (timeLeft <= 0) {
+            this.start.setVisible(false);
             timerEvent.remove();
-            const res = this.add.text(1080/2, 1080/2, "Complite", {
-                font: "48px Arial",
-                color: "#ffffff",
-                fontStyle: "bold",
-                backgroundColor: "#000000", // Sfondo nero
-              }).setDepth(3).setOrigin(0.5); // Centra il testo
-
-            const winText = this.add.text(1080/2, 1080/2, "Hai vinto", {
-                font: "48px Arial",
-                color: "#ffffff",
-                fontStyle: "bold",
-                backgroundColor: "#000000", // Sfondo nero
-            }).setDepth(3).setOrigin(0.5); // Centra il testo
-
-            res.setVisible(true).setDepth(4);
-            winText.setVisible(true).setDepth(4);
-            this.time.addEvent({
-              delay: 2000,
-              callback: () => {
+            this.haivinto.setVisible(true).setDepth(8);
+            this.time.delayedCall(2000, () => {
+                completeLevel2 = true;
                 this.scene.stop("arcade");
                 this.scene.start("GamePlay")
-              },
-              loop: true
-            });
+            })
             // Ferma il movimento del player
             this.player.setActive(false).setVisible(false);
             this.worldLayer.setDepth(0); // Nascondi il layer della mappa

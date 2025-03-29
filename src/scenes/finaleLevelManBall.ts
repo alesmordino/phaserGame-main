@@ -18,12 +18,16 @@ export default class finaleLevelManBall extends Phaser.Scene {
   private portarossa: Phaser.Physics.Arcade.Sprite;
   private centerHitbox: Phaser.Physics.Arcade.Sprite;
   private doorCollider: Phaser.Physics.Arcade.Collider | null = null; // Added for door collider management
+  private music: Phaser.Sound.BaseSound;
+
 
   constructor() {
     super({ key: "finaleLevelManBall" });
   }
 
   preload(): void {
+    this.load.audio("spiaggia", "assets/sounds/spiaggia.mp3")
+
     this.load.image('black', 'assets/images/black.png');
     this.load.image('pallapiccola', 'assets/images/pallapiccola.png');
     this.load.image('pallagrande', 'assets/images/pallagrande.png');
@@ -54,7 +58,7 @@ export default class finaleLevelManBall extends Phaser.Scene {
     this.centerHitbox.setImmovable(true);
     this.centerHitbox.setVisible(false); 
     this.centerHitbox.setDebug(true, true, 0xff0000);
-
+    this.sound.play('spiaggia', { loop: true });
     if(this.bool == false){
       this.time.addEvent({
         delay: 3500,
@@ -96,6 +100,10 @@ export default class finaleLevelManBall extends Phaser.Scene {
     this.physics.add.collider(this.pallaPiccola, this.hitbox, this.handleCollision, undefined, this);
     this.physics.add.collider(this.pallaPiccola, this.centerHitbox);
     this.physics.add.collider(this.pallaPiccola, this.portarossa);
+    this.input.keyboard.on('keydown-P', () => {
+      this.scene.stop('finaleLevelManBall');
+      this.scene.start('GamePlay');
+    });
 
     // Initialize the player based on input type
     if(this.bool){

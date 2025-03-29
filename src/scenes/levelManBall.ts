@@ -2,6 +2,7 @@ import PallaPiccola from '../scenes/movingpalla';
 export let completeLevel: boolean = false;
 
 export default class levelManBall extends Phaser.Scene {
+  private music: Phaser.Sound.BaseSound;
   private pallaPiccola: PallaPiccola;
   private gamepad: Phaser.Input.Gamepad.Gamepad | null = null;
   private isUsingGamepad: boolean = false;
@@ -45,6 +46,7 @@ export default class levelManBall extends Phaser.Scene {
   }
 
   preload() {
+    this.load.audio("spiaggia", "assets/sounds/spiaggia.mp3")
     this.load.spritesheet("pallapiccola", "assets/images/pallapiccola.png", { frameWidth: 30, frameHeight: 30 });
     this.load.image('mappamanball', 'assets/map/mappamanball.png');
     this.load.tilemapTiledJSON('manball', 'assets/map/manballlevel.json');
@@ -67,7 +69,8 @@ export default class levelManBall extends Phaser.Scene {
 
   create() {
     this.pallaPiccola = new PallaPiccola(this, 85, 120);
-    this.sound.play('music', { loop: true });
+    this.music = this.sound.add('spiaggia', { loop: true });
+    this.music.play();
 
     this.map = this.make.tilemap({ key: "manball" });
     this.tileset = this.map.addTilesetImage("mappamanball", "mappamanball", 30, 30);
@@ -329,6 +332,7 @@ export default class levelManBall extends Phaser.Scene {
           this.image3.setVisible(false);
           console.log('game over');
           this.scene.stop('levelManBall');
+          this.music.stop();
           this.scene.start('GamePlay');
         }
       }

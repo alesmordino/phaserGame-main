@@ -14,6 +14,7 @@ export default class Casino extends Phaser.Scene
   private haivinto: Phaser.GameObjects.Image;
   private completo: Phaser.GameObjects.Image;
   private haiperso: Phaser.GameObjects.Image;
+  private music: Phaser.Sound.BaseSound
 
   constructor() 
   {
@@ -46,6 +47,7 @@ export default class Casino extends Phaser.Scene
     this.load.image("rettbia", "assets/images/rettangolobianco.png");
     this.load.image("pallagia", "assets/images/giallo.png");
     this.load.image("pallabia", "assets/images/bianco.png");
+    this.load.audio('colonna', 'assets/sounds/Casino.mp3');
 
     this.load.image("r0", "assets/images/r0.png");
     this.load.image("r2", "assets/images/r2.png");
@@ -64,6 +66,8 @@ export default class Casino extends Phaser.Scene
 
   create() 
   {
+    this.music = this.sound.add('colonna', { loop: true });
+    this.music.play;
     this.carteDisponibili = [this.carte[0], this.carte[1], this.carte[2], this.carte[3], this.carte[4], this.carte[5]]; // Inizializza le carte disponibili per l'IA
     // Crea la mappa
     this.map = this.make.tilemap({ key: "casino1" });
@@ -307,6 +311,7 @@ carteCliccabili.forEach(({ coperta }) => {
           
           // Oppure, se vuoi ricaricare completamente la scena:
           completeLevel1 = true;
+          this.music.stop();
           this.scene.start('GamePlay');
         });
       });
