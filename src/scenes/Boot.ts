@@ -41,6 +41,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('crediti', 'assets/images/crediti.png');
     this.load.image('autoplay', 'assets/images/autoplay.png');
     this.load.audio('colonna', 'assets/sounds/colonna.mp3');
+    this.load.image('mappatura_controller', 'assets/images/mappatura_controller.png');
   }
 
   create(): void {
@@ -52,29 +53,17 @@ export default class Boot extends Phaser.Scene {
     this.creditiImage = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'credititesti')
       .setVisible(false)
       .setDepth(5);
-    
-    this.backButton = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 90, 'back')
-      .setInteractive()
-      .setScale(0.5)
-      .setVisible(false)
-      .setDepth(5);
-
-    // Hide crediti image when back button is clicked
-    this.backButton.on('pointerdown', () => {
-      this.creditiImage.setVisible(false);
-      this.backButton.setVisible(false);
-    });
 
     // Add game objects
     this._logo = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "logo").setScale(0.3);
     this.sprite = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "animation").setVisible(false).setOrigin(0.5, 0.5);
     this.bg = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "bg1").setVisible(false).setScale(0.55);
-    this.suggeritore = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, "suggeritore").setVisible(false).setScale(0.15).setAlpha(0.3);
+    this.suggeritore = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2+50, "suggeritore").setVisible(false).setScale(0.15).setAlpha(0.3);
     this.plane = this.add.image(0, this.cameras.main.height, 'plane').setScale(0.4).setDepth(1).setVisible(false);
     this.plane1 = this.add.image(this.cameras.main.width / 1.5, -this.cameras.main.height, 'plane1').setScale(0.45).setDepth(1).setVisible(false);
     this.plane2 = this.add.image(-this.cameras.main.width, this.cameras.main.height / 2 - 150, 'plane2').setScale(0.45).setDepth(1).setVisible(false);
     this.pallaGrande = this.add.image(this.cameras.main.width - 200, this.cameras.main.height - 300, 'pallagrande').setScale(1.4).setDepth(1).setVisible(false);
-    this.fish = this.add.image(150, this.cameras.main.height - 150, 'fish').setScale(1.2).setDepth(2).setAlpha(2).setVisible(false);
+    this.fish = this.add.image(150, this.cameras.main.height - 170, 'fish').setScale(1.2).setDepth(2).setAlpha(2).setVisible(false);
 
     // Animation Tweens
     this.tweens.add({
@@ -139,16 +128,16 @@ export default class Boot extends Phaser.Scene {
         yoyo: true,
         repeat: -1
       });
-
       this.suggeritore.setVisible(true).setAlpha(0.3);
       this.tweens.add({
         targets: this.suggeritore,
         scale: 0.25,
         alpha: 1,
-        duration: 4000,
+        duration: 5000,
         ease: 'Sine.easeInOut',
-        yoyo: true,
-        repeat: -1
+        onComplete: () => {
+          this.suggeritore.setAlpha(1); // Ensure alpha remains at 1 after the tween
+        }
       });
 
       this.fish.setVisible(true);
@@ -163,7 +152,7 @@ export default class Boot extends Phaser.Scene {
         onRepeat: () => this.fish.setVisible(true)
       });
 
-      this.logo = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2 - 300, "logoH").setScale(0.8);
+      this.logo = this.add.image(this.cameras.main.width / 2 - 25, this.cameras.main.height / 2 - 300, "logoH").setScale(0.8);
       this.gioca = this.add.image(this.cameras.main.width / 2 + 5, this.cameras.main.height / 2 - 50, 'gioca')
         .setScale(0.7)
         .setDepth(2)
@@ -188,42 +177,71 @@ export default class Boot extends Phaser.Scene {
       });
 
       // Add autoplay.png in the bottom-left corner
-      const autoplayButton = this.add.image(50, this.cameras.main.height - 50, 'autoplay')
+      const autoplayButton = this.add.image(this.cameras.main.width - 940, this.cameras.main.height - 90, 'autoplay')
         .setInteractive()
         .setScale(0.5)
-        .setDepth(5);
+        .setDepth(5)
+        .setVisible(true);
 
+      // Add back.png but make it initially invisible
+      const backButton1 = this.add.image(this.cameras.main.width - 120, this.cameras.main.height - 90, 'back')
+        .setInteractive()
+        .setScale(0.5)
+        .setDepth(6)
+        .setVisible(false);
+
+      // Add mappatura_controller.png but make it initially invisible
+      const controllerImage = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'mappatura_controller')
+        .setScale(1.0) // Aumenta la scala iniziale
+        .setDepth(5)
+        .setVisible(false);
+
+      // Handle autoplayButton click
       autoplayButton.on('pointerdown', () => {
-        autoplayButton.setVisible(false); // Hide autoplay button
-
-        // Display mappatura controller.png in the bottom-left corner
-        const controllerImage = this.add.image(100, this.cameras.main.height - 90, 'mappatura controller')
-          .setScale(0.5)
-          .setDepth(5);
-
-        // Add back.png in the bottom-right corner
-        const backButton = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 90, 'back')
-          .setInteractive()
-          .setScale(0.5)
-          .setDepth(5);
-
-        backButton.on('pointerdown', () => {
-          controllerImage.setVisible(false); // Hide controller image
-          backButton.setVisible(false); // Hide back button
-          autoplayButton.setVisible(true); // Show autoplay button again
-        });
+        autoplayButton.setVisible(false); // Nascondi autoplay button
+        backButton1.setVisible(true); // Mostra back button
+        controllerImage.setScale(1.1).setVisible(true); // Aumenta la scala e mostra mappatura_controller
+        creditiButton.setVisible(false); // Nascondi crediti button
       });
 
-      // Add crediti.png in the bottom-right corner after playBG
+      // Handle backButton click
+      backButton1.on('pointerdown', () => {
+        backButton1.setVisible(false); // Nascondi back button
+        controllerImage.setVisible(false); // Nascondi mappatura_controller
+        autoplayButton.setVisible(true); // Mostra autoplay button
+        creditiButton.setVisible(true); // Mostra crediti button
+      });
+
+      // Add crediti.png in the bottom-right corner
       const creditiButton = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 90, 'crediti')
         .setInteractive()
         .setScale(0.5)
         .setDepth(5)
         .setVisible(true);
 
+      // Add back.png but make it initially invisible
+      const backButton = this.add.image(this.cameras.main.width - 120, this.cameras.main.height - 90, 'back')
+        .setInteractive()
+        .setScale(0.5)
+        .setDepth(5)
+        .setVisible(false);
+
+      // Handle creditiButton click
       creditiButton.on('pointerdown', () => {
+        creditiButton.setVisible(false); // Hide crediti button
+        backButton.setVisible(true);
         this.creditiImage.setVisible(true);
-        this.backButton.setVisible(true);
+        autoplayButton.setVisible(false) // Show back button
+      });
+
+      // Handle backButton click
+      backButton.on('pointerdown', () => {
+        backButton.setVisible(false); // Hide back button
+        creditiButton.setVisible(true);
+        this.creditiImage.setVisible(false)
+        autoplayButton.setVisible(true) // Show back button
+         // Show back button
+         // Show crediti button
       });
 
       this.startPlaneAnimations();

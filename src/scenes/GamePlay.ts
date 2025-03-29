@@ -307,7 +307,7 @@ export default class GamePlay extends Phaser.Scene {
     this.physics.add.collider(this.player, this.centerHitbox12, () => {
       this.lastPosition = { x: this.player.x, y: this.player.y };
       this.scene.stop("GamePlay");
-      this.scene.start("casino");
+      this.scene.start("SceltaIAScene");
     });
 
     this.centerHitbox14 = this.physics.add.sprite(440, 820, null).setOrigin(0.5, 0.5);

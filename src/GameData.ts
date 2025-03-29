@@ -48,7 +48,11 @@ export let GameData: gameData = {
     },{ 
       key: "map", 
       path: "assets/map/map.json" 
-    }
+    },
+    { 
+      key: "casino1", 
+      path: "assets/map/casino.json" 
+    },
   ],
 
   sounds: [

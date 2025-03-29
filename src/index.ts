@@ -9,6 +9,7 @@ import levelManBall from "./scenes/levelManBall";
 import casino from "./scenes/casino";
 import arcade from "./scenes/arcade";
 import finaleLevelManBall from "./scenes/finaleLevelManBall";
+import SceltaIAScene from "./scenes/SceltaIAScene";
 
 //il listener per l'evento load della pagina
 //questo evento viene lanciato quando la pagina è stata caricata
@@ -38,6 +39,7 @@ window.addEventListener("load", () => {
       casino,
       arcade,
       finaleLevelManBall,
+      SceltaIAScene,
     ],
     physics: {
       default: "arcade",  // Sistema di fisica
